@@ -402,7 +402,7 @@ Value dumpwallet(const Array& params, bool fHelp)
 
 Value bip38encrypt(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 1)
+    if (fHelp || params.size() != 2)
         throw runtime_error(
             "bip38encrypt \"darknetaddress\"\n"
             "\nEncrypts a private key corresponding to 'darknetaddress'.\n"
@@ -434,7 +434,7 @@ Value bip38encrypt(const Array& params, bool fHelp)
 
 Value bip38decrypt(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 1)
+    if (fHelp || params.size() != 2)
         throw runtime_error(
             "bip38decrypt \"darknetaddress\"\n"
             "\nDecrypts a password protected private key.\n"
