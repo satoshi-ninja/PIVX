@@ -103,6 +103,8 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "reservebalance", 0 },
     { "reservebalance", 1 },
     { "setstakesplitthreshold", 0 },
+    { "bip38encrypt", 0 },
+    { "bip38decrypt", 0 },
 };
 
 class CRPCConvertTable

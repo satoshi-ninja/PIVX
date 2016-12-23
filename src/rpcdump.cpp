@@ -399,3 +399,57 @@ Value dumpwallet(const Array& params, bool fHelp)
     file.close();
     return Value::null;
 }
+
+Value bip38encrypt(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+            "bip38encrypt \"darknetaddress\"\n"
+            "\nEncrypts a private key corresponding to 'darknetaddress'.\n"
+            "\nArguments:\n"
+            "1. \"darknetaddress\"   (string, required) The darknet address for the private key\n"
+            "2. \"passphrase\"   (string, required) The passphrase you want the private key to be encrypted with\n"
+            "\nResult:\n"
+            "\"key\"                (string) The encrypted private key\n"
+            "\nExamples:\n"
+        );
+
+    EnsureWalletIsUnlocked();
+
+    string strAddress = params[0].get_str();
+    string strPassword = params[1].get_str();
+
+    CBitcoinAddress address;
+    if (!address.SetString(strAddress))
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid DarkNet address");
+    CKeyID keyID;
+    if (!address.GetKeyID(keyID))
+        throw JSONRPCError(RPC_TYPE_ERROR, "Address does not refer to a key");
+    CKey vchSecret;
+    if (!pwalletMain->GetKey(keyID, vchSecret))
+        throw JSONRPCError(RPC_WALLET_ERROR, "Private key for address " + strAddress + " is not known");
+
+    return "done";
+}
+
+Value bip38decrypt(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+            "bip38decrypt \"darknetaddress\"\n"
+            "\nDecrypts a password protected private key.\n"
+            "\nArguments:\n"
+            "1. \"encryptedkey\"   (string, required) The encrypted private key\n"
+            "2. \"passphrase\"   (string, required) The passphrase you want the private key to be encrypted with\n"
+            "\nResult:\n"
+            "\"key\"                (string) The decrypted private key\n"
+            "\nExamples:\n"
+        );
+
+    EnsureWalletIsUnlocked();
+
+    string strKey = params[0].get_str();
+    string strPassword = params[1].get_str();
+
+    return "done";
+}
