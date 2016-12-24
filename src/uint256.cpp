@@ -249,6 +249,10 @@ template void base_uint<256>::SetHex(const char*);
 template void base_uint<256>::SetHex(const std::string&);
 template unsigned int base_uint<256>::bits() const;
 
+// Explicit instantiations for base_uint<256>
+template std::string base_uint<512>::GetHex() const;
+template std::string base_uint<512>::ToString() const;
+
 // This implementation directly uses shifts instead of going
 // through an intermediate MPI representation.
 uint256& uint256::SetCompact(uint32_t nCompact, bool* pfNegative, bool* pfOverflow)
