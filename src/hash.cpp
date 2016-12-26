@@ -4,6 +4,7 @@
 
 #include "hash.h"
 #include "crypto/hmac_sha512.h"
+#include "crypto/scrypt.h"
 
 inline uint32_t ROTL32(uint32_t x, int8_t r)
 {
@@ -80,4 +81,9 @@ void BIP32Hash(const unsigned char chainCode[32], unsigned int nChild, unsigned 
                                .Write(data, 32)
                                .Write(num, 4)
                                .Finalize(output);
+}
+
+void scrypt_hash(std::string strPassphrase, std::string strSalt, char *output, unsigned int N, unsigned int r, unsigned int p, unsigned int dkLen)
+{
+    scrypt(strPassphrase, strSalt, output, N, r, p, dkLen);
 }
