@@ -17,10 +17,12 @@
 
 #include <fstream>
 #include <stdint.h>
+#include <secp256k1.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <openssl/sha.h>
+#include <openssl/aes.h>
 
 #include "json/json_spirit_value.h"
 
@@ -433,6 +435,16 @@ Value bip38encrypt(const Array& params, bool fHelp)
     return "done";
 }
 
+std::string AddressToBIP38AddressHash(/**CBitcoinAddress address**/string strAddress)
+{
+    //double SHA256 hash the address
+    std::string strHash = Hash(strAddress);
+    strHash = Hash(strHash);
+
+    //return the first 4 bytes (2 hex each)
+    return strHash.substr(0, 8);
+}
+
 Value bip38decrypt(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)
@@ -449,12 +461,72 @@ Value bip38decrypt(const Array& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    string strPassword = params[0].get_str();
-    string strSalt = params[1].get_str();
+    /** Collect private key and passphrase **/
+    string strPassphrase = params[0].get_str();
+    string strKey = DecodeBase58(params[1].get_str().c_str());
 
-    uint512 hash;
-    char *output = BEGIN(hash);
-    scrypt_hash(strPassword, strSalt, output, 1024, 8, 16, 64);
+    /** 39 bytes - 79 characters
+     * 1) Prefix - 2 bytes - 4 chars - strKey[0..3]
+     * 2) Flagbyte - 1 byte - 2 chars - strKey[4..5]
+     * 3) OwnerSalt - 4 bytes - 8 chars - strKey[6..13]
+     * 4) Owner Entropy - 8 bytes - 16 chars - strKey[14..29]
+     * 4) Encrypted Part 1 - 8 bytes - 16 chars - strKey[29..45]
+     * 5) Encrypted Part 2 - 16 bytes - 32 chars - strKey[46..61]
+     */
 
-    return hash.ToStringReverseEndian();
+    /** Derive passfactor using scrypt with ownersalt and the user's passphrase and use it to recompute passpoint **/
+    //salt is 8 bytes from the key
+    string ownersalt = strKey.substr(6, 8);
+
+    //passfactor is the scrypt hash of passphrase and ownersalt (NOTE this needs to handle alt cases too in the future)
+    uint256 passfactor;
+    scrypt_hash(strPassphrase, ownersalt, BEGIN(passfactor), 16384, 8, 8, 32);
+
+    //passpoint is the ec_mult of passfactor on secp256k1 - this should be the equivalent of just creating a pubkey from it
+    CPubKey passpoint;
+    int clen = 65;
+    if(secp256k1_ec_pubkey_create(BEGIN(passpoint), &clen, passfactor.begin(), true) == 0)
+        return "pubkey create failed";
+
+    /** Derive decryption key for seedb using scrypt with passpoint, addresshash, and ownerentropy **/
+    uint512 seedbPass;
+    string addressHash = ownersalt;
+    scrypt_hash(HexStr(passpoint), addressHash + ownersalt, BEGIN(seedbPass), 1024, 1, 1, 64);
+
+    //get derived halfs, being mindful for endian switch
+    uint256 derivedHalf1(seedbPass.ToString().substr(64, 128));
+    unsigned char* dh1 = derivedHalf1.begin();
+    uint256 d2(seedbPass.ToString().substr(0, 64));
+    unsigned char* derivedhalf2 = d2.begin();
+
+    /** Decrypt encryptedpart2 using AES256Decrypt to yield the last 8 bytes of seedb and the last 8 bytes of encryptedpart1. **/
+    uint256 dp2;
+    char* decryptedPart2 = BEGIN(dp2);
+    const char* encryptedPart2 = strKey.substr(62, 93).c_str();
+
+    //decrypted part 2: (encryptedpart1[8..15]+seedb[16..23]) xor derivedhalf1[16..31]
+    AES_KEY key;
+    AES_set_decrypt_key(derivedhalf2, 256, &key);
+    AES_decrypt((unsigned char*)encryptedPart2, (unsigned char*)decryptedPart2, &key);
+
+    //xor decryptedPart2 and derivedhalf1 - derived half one shift left 64 bits to drop off 0-15
+    uint256 x1 = dp2^(derivedHalf1<<64);
+
+    //seedbPart2 is the last half of x1 (64 bytes total)
+    uint256 seedbPart2 = x1<<32;
+
+    /** Decrypt encryptedpart1 to yield the remainder of seedb. **/
+    uint256 decryptedPart1;
+    char* dp1 = BEGIN(decryptedPart1);
+    const char* encryptedPart1 = strKey.substr(30, 61).c_str();
+
+    //decrypted part 1: seedb[0..15] xor derivedhalf1[0..15]
+    AES_decrypt((unsigned char*)encryptedPart1, (unsigned char*)dp1, &key);
+    uint256 seedbPart1 = decryptedPart1 ^ (derivedHalf1 & uint256("0xffffffffffffffff000000000000000000000000000000000000000000000000"));
+
+    string ret = derivedHalf1.ToString() + "|" + (derivedHalf1 & uint256("0xffffffffffffffff000000000000000000000000000000000000000000000000")).ToString();
+
+    return ret;
 }
+
+

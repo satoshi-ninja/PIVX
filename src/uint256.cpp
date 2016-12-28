@@ -257,6 +257,7 @@ template std::string base_uint<256>::ToString() const;
 template void base_uint<256>::SetHex(const char*);
 template void base_uint<256>::SetHex(const std::string&);
 template unsigned int base_uint<256>::bits() const;
+template std::string base_uint<256>::ToStringReverseEndian() const;
 
 // Explicit instantiations for base_uint<512>
 template std::string base_uint<512>::GetHex() const;
