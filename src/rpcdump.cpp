@@ -14,6 +14,7 @@
 #include "util.h"
 #include "utiltime.h"
 #include "wallet.h"
+#include "utilstrencodings.h"
 
 #include <fstream>
 #include <stdint.h>
@@ -468,7 +469,7 @@ Value bip38decrypt(const Array& params, bool fHelp)
     /** 39 bytes - 78 characters
      * 1) Prefix - 2 bytes - 4 chars - strKey[0..3]
      * 2) Flagbyte - 1 byte - 2 chars - strKey[4..5]
-     * 3) OwnerSalt - 4 bytes - 8 chars - strKey[6..13]
+     * 3) addresshash - 4 bytes - 8 chars - strKey[6..13]
      * 4) Owner Entropy - 8 bytes - 16 chars - strKey[14..29]
      * 5) Encrypted Part 1 - 8 bytes - 16 chars - strKey[30..45]
      * 6) Encrypted Part 2 - 16 bytes - 32 chars - strKey[46..77]
@@ -479,26 +480,29 @@ Value bip38decrypt(const Array& params, bool fHelp)
 
     /** Derive passfactor using scrypt with ownersalt and the user's passphrase and use it to recompute passpoint **/
     //salt is 8 bytes from the key
-    string ownersalt = strKey.substr(6, 8);
+    string ownersalt = strKey.substr(14, 16);
+    string ret = "passphrase: " + HexStr(strPassphrase) + "\nownersalt: " + HexStr(ownersalt);
 
     //passfactor is the scrypt hash of passphrase and ownersalt (NOTE this needs to handle alt cases too in the future)
     uint256 passfactor;
-    scrypt_hash(strPassphrase, ownersalt, BEGIN(passfactor), 16384, 8, 8, 32);
+    char* output = BEGIN(passfactor);
+    scrypt_hash(strPassphrase, ownersalt, output, 16384, 8, 8, 32);
     // passFactor: c8ff7a1c8c8898a0361e477fa8f0f05c00d07c5d9626f00b03c0140a307c98f4
-
+    ret += "\n passfactor: " + HexStr(passfactor);
 
     //passpoint is the ec_mult of passfactor on secp256k1 - this should be the equivalent of just creating a pubkey from it
     CPubKey passpoint;
     int clen = 65;
-    if(secp256k1_ec_pubkey_create(BEGIN(passpoint), &clen, passfactor.begin(), true) == 0)
-        return "pubkey create failed";
+    secp256k1_ec_pubkey_create((unsigned char*)BEGIN(passpoint), &clen, passfactor.begin(), true);
     //passPoint: 020eac136e97ce6bf3e2bceb65d906742f7317b6518c54c64353c43dcc36688c47
+    ret += "\n passPoint: " + HexStr(passpoint);
 
     /** Derive decryption key for seedb using scrypt with passpoint, addresshash, and ownerentropy **/
     uint512 seedbPass;
     string addressHash = ownersalt;
     scrypt_hash(HexStr(passpoint), addressHash + ownersalt, BEGIN(seedbPass), 1024, 1, 1, 64);
     //seedBPass: da2d320e2ca088575369601e94dd71f210fc69c047a3d0f48bdbaab595916dc7b8d083ea2678b5a71558c0fb0efa58b565227d05adf0c25fa0b9a74755477827
+    ret += "\n seedBPass: " +seedbPass.ToStringReverseEndian();
 
     //get derived halfs, being mindful for endian switch
     uint256 derivedHalf1(seedbPass.ToString().substr(64, 128));
@@ -534,7 +538,7 @@ Value bip38decrypt(const Array& params, bool fHelp)
     uint256 seedbPart1 = decryptedPart1 ^ (derivedHalf1 & uint256("0xffffffffffffffff000000000000000000000000000000000000000000000000"));
     //seedBPart1: 99241d58245c883896f80843d2846672
 
-    string ret = derivedHalf1.ToString() + "|" + (derivedHalf1 & uint256("0xffffffffffffffff000000000000000000000000000000000000000000000000")).ToString();
+    //string ret = derivedHalf1.ToString() + "|" + (derivedHalf1 & uint256("0xffffffffffffffff000000000000000000000000000000000000000000000000")).ToString();
 
     return ret;
 }
