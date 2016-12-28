@@ -511,9 +511,11 @@ Value bip38decrypt(const Array& params, bool fHelp)
     ret += "\n passPoint: " + HexStr(passpoint);
 
     /** Derive decryption key for seedb using scrypt with passpoint, addresshash, and ownerentropy **/
+    string strAddressHash = strKey.substr(6, 8);
+    string temp = ReverseEndianString(strAddressHash + ownersalt);
+    uint256 s2(temp);
     uint512 seedbPass;
-    string salt = ownersalt;// + addressHash;
-    scrypt_hash(BEGIN(passpoint), HexStr(passpoint).size()/2, salt.c_str(), salt.size(), BEGIN(seedbPass), 1024, 1, 1, 64);
+    scrypt_hash(BEGIN(passpoint), HexStr(passpoint).size()/2, BEGIN(s2), temp.size()/2, BEGIN(seedbPass), 1024, 1, 1, 64);
     //seedBPass: da2d320e2ca088575369601e94dd71f210fc69c047a3d0f48bdbaab595916dc7b8d083ea2678b5a71558c0fb0efa58b565227d05adf0c25fa0b9a74755477827
     ret += "\n seedBPass: " +seedbPass.ToStringReverseEndian();
 
