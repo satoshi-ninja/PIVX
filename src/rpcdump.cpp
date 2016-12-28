@@ -517,43 +517,61 @@ Value bip38decrypt(const Array& params, bool fHelp)
     uint512 seedbPass;
     scrypt_hash(BEGIN(passpoint), HexStr(passpoint).size()/2, BEGIN(s2), temp.size()/2, BEGIN(seedbPass), 1024, 1, 1, 64);
     //seedBPass: da2d320e2ca088575369601e94dd71f210fc69c047a3d0f48bdbaab595916dc7b8d083ea2678b5a71558c0fb0efa58b565227d05adf0c25fa0b9a74755477827
-    ret += "\n seedBPass: " +seedbPass.ToStringReverseEndian();
+    ret += "\n seedBPass: " + seedbPass.ToStringReverseEndian();
 
     //get derived halfs, being mindful for endian switch
     uint256 derivedHalf1(seedbPass.ToString().substr(64, 128));
-    unsigned char* dh1 = derivedHalf1.begin();
-    uint256 d2(seedbPass.ToString().substr(0, 64));
-    unsigned char* derivedhalf2 = d2.begin();
+    ret+= "\n derivedHalf1: " + HexStr(derivedHalf1);
+    uint256 derivedHalf2(seedbPass.ToString().substr(0, 64));
+    unsigned char* dh2 = derivedHalf2.begin();
+    ret+= "\n derivedhalf2: " + HexStr(derivedHalf2);
 
     /** Decrypt encryptedpart2 using AES256Decrypt to yield the last 8 bytes of seedb and the last 8 bytes of encryptedpart1. **/
-    uint256 dp2;
-    char* decryptedPart2 = BEGIN(dp2);
-    const char* encryptedPart2 = strKey.substr(62, 93).c_str();
+    uint256 decryptedPart2;
+    uint256 encryptedPart2(ReverseEndianString(strKey.substr(46, 32)));
+    ret += "\n encryptedPart2: " + strKey.substr(46, 32);
 
     //decrypted part 2: (encryptedpart1[8..15]+seedb[16..23]) xor derivedhalf1[16..31]
     AES_KEY key;
-    AES_set_decrypt_key(derivedhalf2, 256, &key);
-    AES_decrypt((unsigned char*)encryptedPart2, (unsigned char*)decryptedPart2, &key);
+    AES_set_decrypt_key(dh2, 256, &key);
+    AES_decrypt((unsigned char*)BEGIN(encryptedPart2), (unsigned char*)BEGIN(decryptedPart2), &key);
     //decryptedPart2: 1bca32ddebfc27d15cea84d4005b77ab
+    ret += "\n decryptedPart2: " + HexStr(decryptedPart2);
 
-    //xor decryptedPart2 and derivedhalf1 - derived half one shift left 64 bits to drop off 0-15
-    uint256 x1 = dp2^(derivedHalf1<<64);
+    //xor decryptedPart2 and 2nd half of derived half 1
+    uint256 x0 = derivedHalf1>>128; //drop off the first half (note: endian)
+    ret += "\n x0: " + HexStr(x0);
+    uint256 x1 = decryptedPart2^x0;
+    ret += "\n x1: " + HexStr(x1);
 
-    //seedbPart2 is the last half of x1 (64 bytes total)
-    uint256 seedbPart2 = x1<<32;
+    //seedbPart2 is the last half of x1
+    uint256 seedbPart2 = x1>>64;
     //seedBPart2: d7312e6195ca1a6c
+    ret += "\n seedbPart2: " + HexStr(seedbPart2);
+
+    uint256 encryptedPart1(ReverseEndianString(strKey.substr(30, 16)));
+    ret += "\n encryptedPart1: " + HexStr(encryptedPart1);
 
     /** Decrypt encryptedpart1 to yield the remainder of seedb. **/
     uint256 decryptedPart1;
-    char* dp1 = BEGIN(decryptedPart1);
-    const char* encryptedPart1 = strKey.substr(30, 61).c_str();
+    AES_set_decrypt_key(dh2, 256, &key);
+
+    uint256 x2 = x1&uint256("0xffffffffffffffff"); // set x2 to seedbPart1 (still encrypted)
+    x2 = x2<<64; //make room to add encryptedPart1 to the front
+    x2 = encryptedPart1|x2; //combine with encryptedPart1
+    ret += "\n x2: " + HexStr(x2);
+    AES_decrypt((unsigned char*)BEGIN(x2), (unsigned char*)BEGIN(decryptedPart1), &key);
+    ret += "\n decryptedPart1: " + HexStr(decryptedPart1);
 
     //decrypted part 1: seedb[0..15] xor derivedhalf1[0..15]
-    AES_decrypt((unsigned char*)encryptedPart1, (unsigned char*)dp1, &key);
-    uint256 seedbPart1 = decryptedPart1 ^ (derivedHalf1 & uint256("0xffffffffffffffff000000000000000000000000000000000000000000000000"));
+    uint256 x3 = derivedHalf1 & uint256("0xffffffffffffffffffffffffffffffff");
+    ret += "\n x3: " + HexStr(x3);
+    uint256 seedbPart1 = decryptedPart1 ^ x3;
+    ret += "\n seedbPart1: " + HexStr(seedbPart1);
     //seedBPart1: 99241d58245c883896f80843d2846672
 
-    //string ret = derivedHalf1.ToString() + "|" + (derivedHalf1 & uint256("0xffffffffffffffff000000000000000000000000000000000000000000000000")).ToString();
+    uint256 seedB = seedbPart1|(seedbPart2<<128);
+    ret += "\n seedB: " + HexStr(seedB);
 
     return ret;
 }
