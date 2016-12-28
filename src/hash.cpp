@@ -83,7 +83,7 @@ void BIP32Hash(const unsigned char chainCode[32], unsigned int nChild, unsigned 
                                .Finalize(output);
 }
 
-void scrypt_hash(std::string strPassphrase, std::string strSalt, char *output, unsigned int N, unsigned int r, unsigned int p, unsigned int dkLen)
+void scrypt_hash(const char* pass, unsigned int pLen, const char* salt, unsigned int sLen, char *output, unsigned int N, unsigned int r, unsigned int p, unsigned int dkLen)
 {
-    scrypt(strPassphrase, strSalt, output, N, r, p, dkLen);
+    scrypt(pass, pLen, salt, sLen, output, N, r, p, dkLen);
 }

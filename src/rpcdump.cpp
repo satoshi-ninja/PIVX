@@ -446,6 +446,18 @@ std::string AddressToBIP38AddressHash(/**CBitcoinAddress address**/string strAdd
     return strHash.substr(0, 8);
 }
 
+std::string ReverseEndianString(std::string in)
+{
+    std::string out = "";
+    unsigned int s = in.size();
+    for(unsigned int i = 0; i < s; i+=2)
+    {
+        out += in.substr(s - i - 2, 2);
+    }
+
+    return out;
+}
+
 Value bip38decrypt(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)
@@ -484,11 +496,12 @@ Value bip38decrypt(const Array& params, bool fHelp)
     string ret = "passphrase: " + HexStr(strPassphrase) + "\nownersalt: " + HexStr(ownersalt);
 
     //passfactor is the scrypt hash of passphrase and ownersalt (NOTE this needs to handle alt cases too in the future)
+    const char* pass = strPassphrase.c_str();
+    uint64_t s = uint256(ReverseEndianString(ownersalt)).Get64();
     uint256 passfactor;
     char* output = BEGIN(passfactor);
-    scrypt_hash(strPassphrase, ownersalt, output, 16384, 8, 8, 32);
-    // passFactor: c8ff7a1c8c8898a0361e477fa8f0f05c00d07c5d9626f00b03c0140a307c98f4
-    ret += "\n passfactor: " + HexStr(passfactor);
+    scrypt_hash(pass, strPassphrase.size(), BEGIN(s), ownersalt.size()/2, output, 16384, 8, 8, 32);
+    ret += "\n passfactor: " + HexStr(passfactor); // passFactor: c8ff7a1c8c8898a0361e477fa8f0f05c00d07c5d9626f00b03c0140a307c98f4
 
     //passpoint is the ec_mult of passfactor on secp256k1 - this should be the equivalent of just creating a pubkey from it
     CPubKey passpoint;
@@ -499,8 +512,8 @@ Value bip38decrypt(const Array& params, bool fHelp)
 
     /** Derive decryption key for seedb using scrypt with passpoint, addresshash, and ownerentropy **/
     uint512 seedbPass;
-    string addressHash = ownersalt;
-    scrypt_hash(HexStr(passpoint), addressHash + ownersalt, BEGIN(seedbPass), 1024, 1, 1, 64);
+    string salt = ownersalt;// + addressHash;
+    scrypt_hash(BEGIN(passpoint), HexStr(passpoint).size()/2, salt.c_str(), salt.size(), BEGIN(seedbPass), 1024, 1, 1, 64);
     //seedBPass: da2d320e2ca088575369601e94dd71f210fc69c047a3d0f48bdbaab595916dc7b8d083ea2678b5a71558c0fb0efa58b565227d05adf0c25fa0b9a74755477827
     ret += "\n seedBPass: " +seedbPass.ToStringReverseEndian();
 

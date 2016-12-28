@@ -375,6 +375,6 @@ inline uint256 HashQuark(const T1 pbegin, const T1 pend)
 
 }
 
-void scrypt_hash(std::string strPassphrase, std::string strSalt, char *output, unsigned int N, unsigned int r, unsigned int p, unsigned int dkLen);
+void scrypt_hash(const char* pass, unsigned int pLen, const char* salt, unsigned int sLen, char *output, unsigned int N, unsigned int r, unsigned int p, unsigned int dkLen);
 
 #endif // BITCOIN_HASH_H

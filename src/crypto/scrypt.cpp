@@ -28,7 +28,8 @@
  */
 
 #include "crypto/scrypt.h"
-
+#include "uint256.h"
+#include "utilstrencodings.h"
 #include <openssl/sha.h>
 #include <string>
 
@@ -356,12 +357,8 @@ void SMix(uint8_t *B, unsigned int r, unsigned int N, void* _V, void* XY)
         le32enc_2(&B[4 * k], X[k]);
 }
 
-void scrypt(std::string strPassphrase, std::string strSalt, char *output, unsigned int N, unsigned int r, unsigned int p, unsigned int dkLen)
+void scrypt(const char* pass, unsigned int pLen, const char* salt, unsigned int sLen, char *output, unsigned int N, unsigned int r, unsigned int p, unsigned int dkLen)
 {
-    //inputs
-    const char *pass = strPassphrase.c_str();
-    const char *salt = strSalt.c_str();
-
     //containers
     void* V0 = malloc(128 * r * N + 63);
     void* XY0 = malloc(256 * r + 64 + 63);
@@ -370,14 +367,14 @@ void scrypt(std::string strPassphrase, std::string strSalt, char *output, unsign
     uint32_t* V = (uint32_t *)(((uintptr_t)(V0) + 63) & ~ (uintptr_t)(63));
     uint32_t* XY = (uint32_t *)(((uintptr_t)(XY0) + 63) & ~ (uintptr_t)(63));
 
-    PBKDF2_SHA256((const uint8_t *)pass, strPassphrase.size(), (const uint8_t *)salt, strSalt.size(), 1, B, p * 128 * r);
+    PBKDF2_SHA256((const uint8_t *)pass, pLen, (const uint8_t *)salt, sLen, 1, B, p * 128 * r);
 
     for(unsigned int i = 0; i < p; i++)
     {
         SMix(&B[i * 128 * r], r, N, V, XY);
     }
 
-    PBKDF2_SHA256((const uint8_t *)pass, strPassphrase.size(), B, p * 128 * r, 1, (uint8_t *)output, dkLen);
+    PBKDF2_SHA256((const uint8_t *)pass, pLen, B, p * 128 * r, 1, (uint8_t *)output, dkLen);
 
     free(V0);
     free(XY0);
