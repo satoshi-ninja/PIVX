@@ -74,6 +74,12 @@ void ComputeFactorB(uint256 seedB, uint256& factorB)
 bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint256& privKey)
 {
     std::string strKey = DecodeBase58(strEncryptedKey.c_str());
+
+    //No support for keys that did not use EC multiply
+    std::string type = strKey.substr(2, 2);
+    if(uint256(ReverseEndianString(type)) != uint256(0x43))
+        return false;
+
     std::string flag = strKey.substr(4, 2);
     std::string strAddressHash = strKey.substr(6, 8);
     std::string ownersalt = strKey.substr(14, 16);
