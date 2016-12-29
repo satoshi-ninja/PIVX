@@ -5,6 +5,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "base58.h"
+#include "bip38.h"
 #include "rpcserver.h"
 #include "init.h"
 #include "main.h"
@@ -18,7 +19,6 @@
 
 #include <fstream>
 #include <stdint.h>
-#include <secp256k1.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -420,8 +420,6 @@ Value bip38encrypt(const Array& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    EnsureWalletIsUnlocked();
-
     string strPassphrase = params[0].get_str();
     string strKey = DecodeBase58(params[1].get_str().c_str());
 
@@ -482,120 +480,13 @@ Value bip38decrypt(const Array& params, bool fHelp)
 
     /** Collect private key and passphrase **/
     string strPassphrase = params[0].get_str();
-    string strKey = DecodeBase58(params[1].get_str().c_str());
+    string strKey = params[1].get_str();
 
-    /** 39 bytes - 78 characters
-     * 1) Prefix - 2 bytes - 4 chars - strKey[0..3]
-     * 2) Flagbyte - 1 byte - 2 chars - strKey[4..5]
-     * 3) addresshash - 4 bytes - 8 chars - strKey[6..13]
-     * 4) Owner Entropy - 8 bytes - 16 chars - strKey[14..29]
-     * 5) Encrypted Part 1 - 8 bytes - 16 chars - strKey[30..45]
-     * 6) Encrypted Part 2 - 16 bytes - 32 chars - strKey[46..77]
-     */
-    // password: TestingOneTwoThree
-    // key: 6PfQu77ygVyJLZjfvMLyhLMQbYnu5uguoJJ4kMCLqWwPEdfpwANVS76gTX
-    // prefix 0143 | flag 00 | addhash 62B5 B722 | owner ent A50D BA67 72CB 9383 | encp1 31A7 C4EC 3B84 DEBA | encp2 1749 E6BE 9706 CF33 4FED 7DF5 65C0 C9FB | b58checksum A454 B0C6
+    uint256 privKey;
+    if(!BIP38_Decrypt(strPassphrase, strKey, privKey))
+        return "failed to decrypt";
 
-    /** Derive passfactor using scrypt with ownersalt and the user's passphrase and use it to recompute passpoint **/
-    //salt is 8 bytes from the key
-    string ownersalt = strKey.substr(14, 16);
-    string ret = "passphrase: " + HexStr(strPassphrase) + "\nownersalt: " + HexStr(ownersalt);
-
-    //passfactor is the scrypt hash of passphrase and ownersalt (NOTE this needs to handle alt cases too in the future)
-    const char* pass = strPassphrase.c_str();
-    uint64_t s = uint256(ReverseEndianString(ownersalt)).Get64();
-    uint256 passfactor;
-    char* output = BEGIN(passfactor);
-    scrypt_hash(pass, strPassphrase.size(), BEGIN(s), ownersalt.size()/2, output, 16384, 8, 8, 32);
-    ret += "\n passfactor: " + HexStr(passfactor); // passFactor: c8ff7a1c8c8898a0361e477fa8f0f05c00d07c5d9626f00b03c0140a307c98f4
-
-    //passpoint is the ec_mult of passfactor on secp256k1 - this should be the equivalent of just creating a pubkey from it
-    CPubKey passpoint;
-    int clen = 65;
-    if(secp256k1_ec_pubkey_create((unsigned char*)BEGIN(passpoint), &clen, passfactor.begin(), true) == 0)
-        return "passpoint fail";
-    //passPoint: 020eac136e97ce6bf3e2bceb65d906742f7317b6518c54c64353c43dcc36688c47
-    ret += "\n passPoint: " + HexStr(passpoint);
-
-    /** Derive decryption key for seedb using scrypt with passpoint, addresshash, and ownerentropy **/
-    string strAddressHash = strKey.substr(6, 8);
-    string temp = ReverseEndianString(strAddressHash + ownersalt);
-    uint256 s2(temp);
-    uint512 seedbPass;
-    scrypt_hash(BEGIN(passpoint), HexStr(passpoint).size()/2, BEGIN(s2), temp.size()/2, BEGIN(seedbPass), 1024, 1, 1, 64);
-    //seedBPass: da2d320e2ca088575369601e94dd71f210fc69c047a3d0f48bdbaab595916dc7b8d083ea2678b5a71558c0fb0efa58b565227d05adf0c25fa0b9a74755477827
-    ret += "\n seedBPass: " + seedbPass.ToStringReverseEndian();
-
-    //get derived halfs, being mindful for endian switch
-    uint256 derivedHalf1(seedbPass.ToString().substr(64, 128));
-    ret+= "\n derivedHalf1: " + HexStr(derivedHalf1);
-    uint256 derivedHalf2(seedbPass.ToString().substr(0, 64));
-    unsigned char* dh2 = derivedHalf2.begin();
-    ret+= "\n derivedhalf2: " + HexStr(derivedHalf2);
-
-    /** Decrypt encryptedpart2 using AES256Decrypt to yield the last 8 bytes of seedb and the last 8 bytes of encryptedpart1. **/
-    uint256 decryptedPart2;
-    uint256 encryptedPart2(ReverseEndianString(strKey.substr(46, 32)));
-    ret += "\n encryptedPart2: " + strKey.substr(46, 32);
-
-    //decrypted part 2: (encryptedpart1[8..15]+seedb[16..23]) xor derivedhalf1[16..31]
-    AES_KEY key;
-    AES_set_decrypt_key(dh2, 256, &key);
-    AES_decrypt((unsigned char*)BEGIN(encryptedPart2), (unsigned char*)BEGIN(decryptedPart2), &key);
-    //decryptedPart2: 1bca32ddebfc27d15cea84d4005b77ab
-    ret += "\n decryptedPart2: " + HexStr(decryptedPart2);
-
-    //xor decryptedPart2 and 2nd half of derived half 1
-    uint256 x0 = derivedHalf1>>128; //drop off the first half (note: endian)
-    ret += "\n x0: " + HexStr(x0);
-    uint256 x1 = decryptedPart2^x0;
-    ret += "\n x1: " + HexStr(x1);
-
-    //seedbPart2 is the last half of x1
-    uint256 seedbPart2 = x1>>64;
-    //seedBPart2: d7312e6195ca1a6c
-    ret += "\n seedbPart2: " + HexStr(seedbPart2);
-
-    uint256 encryptedPart1(ReverseEndianString(strKey.substr(30, 16)));
-    ret += "\n encryptedPart1: " + HexStr(encryptedPart1);
-
-    /** Decrypt encryptedpart1 to yield the remainder of seedb. **/
-    uint256 decryptedPart1;
-    AES_set_decrypt_key(dh2, 256, &key);
-
-    uint256 x2 = x1&uint256("0xffffffffffffffff"); // set x2 to seedbPart1 (still encrypted)
-    x2 = x2<<64; //make room to add encryptedPart1 to the front
-    x2 = encryptedPart1|x2; //combine with encryptedPart1
-    ret += "\n x2: " + HexStr(x2);
-    AES_decrypt((unsigned char*)BEGIN(x2), (unsigned char*)BEGIN(decryptedPart1), &key);
-    ret += "\n decryptedPart1: " + HexStr(decryptedPart1);
-
-    //decrypted part 1: seedb[0..15] xor derivedhalf1[0..15]
-    uint256 x3 = derivedHalf1 & uint256("0xffffffffffffffffffffffffffffffff");
-    ret += "\n x3: " + HexStr(x3);
-    uint256 seedbPart1 = decryptedPart1 ^ x3;
-    ret += "\n seedbPart1: " + HexStr(seedbPart1);
-    //seedBPart1: 99241d58245c883896f80843d2846672
-
-    uint256 seedB = seedbPart1|(seedbPart2<<128);
-    ret += "\n seedB: " + HexStr(seedB);
-
-    //factorB - a double sha256 hash of seedb
-    uint256 factorB;
-    unsigned char* fb = (unsigned char*)BEGIN(factorB);
-    Hash(seedB.begin(), 24, fb);
-    Hash(factorB.begin(), 32, fb);
-    ret += "\n factorB: " + HexStr(factorB);
-
-    //multiply passfactor by factorb mod N to yield the priv key
-    uint256 privKey = factorB;
-    unsigned char* k = privKey.begin();
-    if(secp256k1_ec_privkey_tweak_mul(k, passfactor.begin()) == 0)
-        return "failed to get privkey";
-
-    ret+= "\n privkey: " + HexStr(privKey);
-
-    return ret;
+    return "\n privkey: " + HexStr(privKey);
 }
 
 
