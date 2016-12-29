@@ -4,6 +4,7 @@
 #include "base58.h"
 #include "hash.h"
 #include "pubkey.h"
+#include "util.h"
 #include "utilstrencodings.h"
 
 #include <string>
@@ -33,6 +34,15 @@ void ComputePreFactor(std::string strPassphrase, std::string strSalt, uint256& p
     //passfactor is the scrypt hash of passphrase and ownersalt (NOTE this needs to handle alt cases too in the future)
     uint64_t s = uint256(ReverseEndianString(strSalt)).Get64();
     scrypt_hash(strPassphrase.c_str(), strPassphrase.size(), BEGIN(s), strSalt.size()/2, BEGIN(passfactor), 16384, 8, 8, 32);
+}
+
+void ComputePassfactor(std::string ownersalt, uint256 prefactor, uint256& passfactor)
+{
+    //concat prefactor and ownersalt
+    uint512 temp(ReverseEndianString(HexStr(prefactor) + ownersalt));
+    unsigned char* pf = (unsigned char*)BEGIN(passfactor);
+    Hash(temp.begin(), 40, pf); //40 bytes is the length of prefactor + salt
+    Hash(passfactor.begin(), 32, pf);
 }
 
 bool ComputePasspoint(uint256 passfactor, CPubKey& passpoint)
@@ -79,14 +89,11 @@ bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint2
     uint256 prefactor;
     ComputePreFactor(strPassphrase, prefactorSalt, prefactor);
 
-    uint256 passfactor = prefactor;
+    uint256 passfactor;
     if(fLotSequence)
-    {
-        uint512 temp;//(ReverseEndianString(passfactor.ToString() + prefactorSalt));
-        unsigned char* pf = (unsigned char*)BEGIN(passfactor);
-        Hash(temp.begin(), 40, pf); //40 bytes is the length of prefactor + salt
-        Hash(passfactor.begin(), 32, pf);
-    }
+        ComputePassfactor(ownersalt, prefactor, passfactor);
+    else
+        passfactor = prefactor;
 
     CPubKey passpoint;
     if(!ComputePasspoint(passfactor, passpoint))
