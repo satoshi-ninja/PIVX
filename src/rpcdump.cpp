@@ -420,20 +420,38 @@ Value bip38encrypt(const Array& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    string strAddress = params[0].get_str();
-    string strPassword = params[1].get_str();
+    EnsureWalletIsUnlocked();
 
-    CBitcoinAddress address;
-    if (!address.SetString(strAddress))
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid DarkNet address");
-    CKeyID keyID;
-    if (!address.GetKeyID(keyID))
-        throw JSONRPCError(RPC_TYPE_ERROR, "Address does not refer to a key");
-    CKey vchSecret;
-    if (!pwalletMain->GetKey(keyID, vchSecret))
-        throw JSONRPCError(RPC_WALLET_ERROR, "Private key for address " + strAddress + " is not known");
+    string strPassphrase = params[0].get_str();
+    string strKey = DecodeBase58(params[1].get_str().c_str());
 
-    return "done";
+
+    //chars 14..29 of key is ownersalt for consistency check for now but should random generate
+    string ownersalt = strKey.substr(14,16);
+
+
+    const char* pass = strPassphrase.c_str();
+    uint64_t s = uint256(ReverseEndianString(ownersalt)).Get64();
+
+    //passfactor is result of scrypt hash
+    uint256 passfactor;
+    char* out = BEGIN(passfactor);
+    scrypt_hash(pass, strPassphrase.size(), BEGIN(s), ownersalt.size()/2, out, 16384, 8, 8, 32);
+
+
+    //compute ec point g*passfactor
+    CPubKey passpoint;
+    int clen = 65;
+    if(secp256k1_ec_pubkey_create((unsigned char*)BEGIN(passpoint), &clen, passfactor.begin(), true) == 0)
+      return "passpoint failed";
+
+
+    //how do these bytes output passphrase????
+    std::stringstream ss;
+    ss << 0x2CE9B3E1FF39E253;
+
+    return ss.str() + HexStr(ownersalt)  + HexStr(passpoint);
+
 }
 
 std::string AddressToBIP38AddressHash(/**CBitcoinAddress address**/string strAddress)
@@ -444,18 +462,6 @@ std::string AddressToBIP38AddressHash(/**CBitcoinAddress address**/string strAdd
 
     //return the first 4 bytes (2 hex each)
     return strHash.substr(0, 8);
-}
-
-std::string ReverseEndianString(std::string in)
-{
-    std::string out = "";
-    unsigned int s = in.size();
-    for(unsigned int i = 0; i < s; i+=2)
-    {
-        out += in.substr(s - i - 2, 2);
-    }
-
-    return out;
 }
 
 Value bip38decrypt(const Array& params, bool fHelp)
