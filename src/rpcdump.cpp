@@ -506,7 +506,8 @@ Value bip38decrypt(const Array& params, bool fHelp)
     //passpoint is the ec_mult of passfactor on secp256k1 - this should be the equivalent of just creating a pubkey from it
     CPubKey passpoint;
     int clen = 65;
-    secp256k1_ec_pubkey_create((unsigned char*)BEGIN(passpoint), &clen, passfactor.begin(), true);
+    if(secp256k1_ec_pubkey_create((unsigned char*)BEGIN(passpoint), &clen, passfactor.begin(), true) == 0)
+        return "passpoint fail";
     //passPoint: 020eac136e97ce6bf3e2bceb65d906742f7317b6518c54c64353c43dcc36688c47
     ret += "\n passPoint: " + HexStr(passpoint);
 
@@ -579,6 +580,14 @@ Value bip38decrypt(const Array& params, bool fHelp)
     Hash(seedB.begin(), 24, fb);
     Hash(factorB.begin(), 32, fb);
     ret += "\n factorB: " + HexStr(factorB);
+
+    //multiply passfactor by factorb mod N to yield the priv key
+    uint256 privKey = factorB;
+    unsigned char* k = privKey.begin();
+    if(secp256k1_ec_privkey_tweak_mul(k, passfactor.begin()) == 0)
+        return "failed to get privkey";
+
+    ret+= "\n privkey: " + HexStr(privKey);
 
     return ret;
 }
