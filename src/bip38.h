@@ -28,7 +28,7 @@ void DecryptAES(uint256 encryptedIn, uint256 decryptionKey, uint256& output)
     AES_decrypt((unsigned char*)BEGIN(encryptedIn), (unsigned char*)BEGIN(output), &key);
 }
 
-void ComputePassFactor(std::string strPassphrase, std::string strSalt, uint256& passfactor)
+void ComputePreFactor(std::string strPassphrase, std::string strSalt, uint256& passfactor)
 {
     //passfactor is the scrypt hash of passphrase and ownersalt (NOTE this needs to handle alt cases too in the future)
     uint64_t s = uint256(ReverseEndianString(strSalt)).Get64();
@@ -64,13 +64,29 @@ void ComputeFactorB(uint256 seedB, uint256& factorB)
 bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint256& privKey)
 {
     std::string strKey = DecodeBase58(strEncryptedKey.c_str());
+    std::string flag = strKey.substr(4, 2);
     std::string strAddressHash = strKey.substr(6, 8);
     std::string ownersalt = strKey.substr(14, 16);
     uint256 encryptedPart1(ReverseEndianString(strKey.substr(30, 16)));
     uint256 encryptedPart2(ReverseEndianString(strKey.substr(46, 32)));
 
-    uint256 passfactor;
-    ComputePassFactor(strPassphrase, ownersalt, passfactor);
+    bool fLotSequence = (uint256(ReverseEndianString(flag)) & 0x04) != 0;
+
+    std::string prefactorSalt = ownersalt;
+    if(fLotSequence)
+        prefactorSalt = ownersalt.substr(0, 8);
+
+    uint256 prefactor;
+    ComputePreFactor(strPassphrase, prefactorSalt, prefactor);
+
+    uint256 passfactor = prefactor;
+    if(fLotSequence)
+    {
+        uint512 temp;//(ReverseEndianString(passfactor.ToString() + prefactorSalt));
+        unsigned char* pf = (unsigned char*)BEGIN(passfactor);
+        Hash(temp.begin(), 40, pf); //40 bytes is the length of prefactor + salt
+        Hash(passfactor.begin(), 32, pf);
+    }
 
     CPubKey passpoint;
     if(!ComputePasspoint(passfactor, passpoint))
