@@ -573,6 +573,13 @@ Value bip38decrypt(const Array& params, bool fHelp)
     uint256 seedB = seedbPart1|(seedbPart2<<128);
     ret += "\n seedB: " + HexStr(seedB);
 
+    //factorB - a double sha256 hash of seedb
+    uint256 factorB;
+    unsigned char* fb = (unsigned char*)BEGIN(factorB);
+    Hash(seedB.begin(), 24, fb);
+    Hash(factorB.begin(), 32, fb);
+    ret += "\n factorB: " + HexStr(factorB);
+
     return ret;
 }
 

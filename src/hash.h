@@ -122,6 +122,15 @@ inline std::string Hash(std::string input)
     return ss.str();
 }
 
+/** Compute the 256-bit hash of a void pointer */
+inline void Hash(void* in, unsigned int len, unsigned char* out)
+{
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+    SHA256_Update(&sha256, in, len);
+    SHA256_Final(out, &sha256);
+}
+
 /** Compute the 256-bit hash of an object. */
 template<typename T1>
 inline uint256 Hash(const T1 pbegin, const T1 pend)
