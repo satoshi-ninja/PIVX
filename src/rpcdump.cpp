@@ -484,9 +484,42 @@ Value bip38decrypt(const Array& params, bool fHelp)
 
     uint256 privKey;
     if(!BIP38_Decrypt(strPassphrase, strKey, privKey))
-        return "failed to decrypt";
+        throw JSONRPCError(RPC_WALLET_ERROR, "Failed To Decrypt");
 
-    return "\n privkey: " + HexStr(privKey);
+    Object result;
+    result.push_back(Pair("privatekey", HexStr(privKey)));
+
+    CKey key;
+    key.Set(privKey.begin(), privKey.end(), true);
+
+    if(!key.IsValid())
+        throw JSONRPCError(RPC_WALLET_ERROR, "Private Key Not Valid");
+
+    CPubKey pubkey = key.GetPubKey();
+    assert(key.VerifyPubKey(pubkey));
+    result.push_back(Pair("Address", CBitcoinAddress(pubkey.GetID()).ToString()));
+    CKeyID vchAddress = pubkey.GetID();
+    {
+        pwalletMain->MarkDirty();
+        pwalletMain->SetAddressBook(vchAddress, "", "receive");
+
+        // Don't throw error in case a key is already there
+        if (pwalletMain->HaveKey(vchAddress))
+            throw JSONRPCError(RPC_WALLET_ERROR, "Key already held by wallet");
+
+        pwalletMain->mapKeyMetadata[vchAddress].nCreateTime = 1;
+
+        if (!pwalletMain->AddKeyPubKey(key, pubkey))
+            throw JSONRPCError(RPC_WALLET_ERROR, "Error adding key to wallet");
+
+        // whenever a key is imported, we need to scan the whole chain
+        pwalletMain->nTimeFirstKey = 1; // 0 would be considered 'no value'
+        pwalletMain->ScanForWalletTransactions(chainActive.Genesis(), true);
+    }
+
+
+
+    return result;
 }
 
 
