@@ -29,11 +29,11 @@ void DecryptAES(uint256 encryptedIn, uint256 decryptionKey, uint256& output)
     AES_decrypt(encryptedIn.begin(), output.begin(), &key);
 }
 
-void ComputePreFactor(std::string strPassphrase, std::string strSalt, uint256& passfactor)
+void ComputePreFactor(std::string strPassphrase, std::string strSalt, uint256& prefactor)
 {
     //passfactor is the scrypt hash of passphrase and ownersalt (NOTE this needs to handle alt cases too in the future)
     uint64_t s = uint256(ReverseEndianString(strSalt)).Get64();
-    scrypt_hash(strPassphrase.c_str(), strPassphrase.size(), BEGIN(s), strSalt.size()/2, BEGIN(passfactor), 16384, 8, 8, 32);
+    scrypt_hash(strPassphrase.c_str(), strPassphrase.size(), BEGIN(s), strSalt.size()/2, BEGIN(prefactor), 16384, 8, 8, 32);
 }
 
 void ComputePassfactor(std::string ownersalt, uint256 prefactor, uint256& passfactor)
@@ -72,9 +72,6 @@ bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint2
 
     //No support for keys that did not use EC multiply
     std::string type = strKey.substr(2, 2);
-    if(uint256(ReverseEndianString(type)) != uint256(0x43))
-        return false;
-
     std::string flag = strKey.substr(4, 2);
     std::string strAddressHash = strKey.substr(6, 8);
     std::string ownersalt = strKey.substr(14, 16);
@@ -82,6 +79,34 @@ bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint2
     uint256 encryptedPart2(ReverseEndianString(strKey.substr(46, 32)));
 
     fCompressed = (uint256(ReverseEndianString(flag)) & 0x20) != 0;
+
+    //not ec multiplied
+    if(uint256(ReverseEndianString(type)) != uint256(0x43))
+    {
+        uint512 hashed;
+        encryptedPart1 = uint256(ReverseEndianString(strKey.substr(14, 32)));
+        uint64_t salt = uint256(ReverseEndianString(strAddressHash)).Get64();
+        scrypt_hash(strPassphrase.c_str(), strPassphrase.size(), BEGIN(salt), strAddressHash.size()/2, BEGIN(hashed), 16384, 8, 8, 64);
+
+        uint256 derivedHalf1(hashed.ToString().substr(64, 128));
+        uint256 derivedHalf2(hashed.ToString().substr(0, 64));
+
+        uint256 decryptedPart1;
+        DecryptAES(encryptedPart1, derivedHalf2, decryptedPart1);
+
+        uint256 decryptedPart2;
+        DecryptAES(encryptedPart2, derivedHalf2, decryptedPart2);
+
+        //combine decrypted parts into 64 bytes
+        uint256 temp1 = decryptedPart2 << 128;
+        temp1 = temp1 | decryptedPart1;
+
+        //xor the decryption with the derived half 1 for the final key
+        privKey = temp1 ^ derivedHalf1;
+
+        return true;
+    }
+
     bool fLotSequence = (uint256(ReverseEndianString(flag)) & 0x04) != 0;
 
     std::string prefactorSalt = ownersalt;
