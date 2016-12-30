@@ -26,7 +26,7 @@ void DecryptAES(uint256 encryptedIn, uint256 decryptionKey, uint256& output)
 {
     AES_KEY key;
     AES_set_decrypt_key(decryptionKey.begin(), 256, &key);
-    AES_decrypt((unsigned char*)BEGIN(encryptedIn), (unsigned char*)BEGIN(output), &key);
+    AES_decrypt(encryptedIn.begin(), output.begin(), &key);
 }
 
 void ComputePreFactor(std::string strPassphrase, std::string strSalt, uint256& passfactor)
@@ -40,19 +40,15 @@ void ComputePassfactor(std::string ownersalt, uint256 prefactor, uint256& passfa
 {
     //concat prefactor and ownersalt
     uint512 temp(ReverseEndianString(HexStr(prefactor) + ownersalt));
-    unsigned char* pf = (unsigned char*)BEGIN(passfactor);
-    Hash(temp.begin(), 40, pf); //40 bytes is the length of prefactor + salt
-    Hash(passfactor.begin(), 32, pf);
+    Hash(temp.begin(), 40, passfactor.begin()); //40 bytes is the length of prefactor + salt
+    Hash(passfactor.begin(), 32, passfactor.begin());
 }
 
 bool ComputePasspoint(uint256 passfactor, CPubKey& passpoint)
 {
     //passpoint is the ec_mult of passfactor on secp256k1
     int clen = 65;
-    if(secp256k1_ec_pubkey_create((unsigned char*)BEGIN(passpoint), &clen, passfactor.begin(), true) == 0)
-        return false;
-
-    return true;
+    return secp256k1_ec_pubkey_create(UBEGIN(passpoint), &clen, passfactor.begin(), true) != 0;
 }
 
 void ComputeSeedBPass(CPubKey passpoint, std::string strAddressHash, std::string strOwnerSalt, uint512& seedBPass)
@@ -66,12 +62,11 @@ void ComputeSeedBPass(CPubKey passpoint, std::string strAddressHash, std::string
 void ComputeFactorB(uint256 seedB, uint256& factorB)
 {
     //factorB - a double sha256 hash of seedb
-    unsigned char* fb = (unsigned char*)BEGIN(factorB);
-    Hash(seedB.begin(), 24, fb); //seedB is only 24 bytes
-    Hash(factorB.begin(), 32, fb);
+    Hash(seedB.begin(), 24, factorB.begin()); //seedB is only 24 bytes
+    Hash(factorB.begin(), 32, factorB.begin());
 }
 
-bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint256& privKey)
+bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint256& privKey, bool& fCompressed)
 {
     std::string strKey = DecodeBase58(strEncryptedKey.c_str());
 
@@ -86,6 +81,7 @@ bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint2
     uint256 encryptedPart1(ReverseEndianString(strKey.substr(30, 16)));
     uint256 encryptedPart2(ReverseEndianString(strKey.substr(46, 32)));
 
+    fCompressed = (uint256(ReverseEndianString(flag)) & 0x20) != 0;
     bool fLotSequence = (uint256(ReverseEndianString(flag)) & 0x04) != 0;
 
     std::string prefactorSalt = ownersalt;
