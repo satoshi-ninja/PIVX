@@ -69,6 +69,10 @@ bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint2
 {
     std::string strKey = DecodeBase58(strEncryptedKey.c_str());
 
+    //incorrect encoding of key, it must be 39 bytes - and another 4 bytes of base58 checksum
+    if(strKey.size() != (78 + 8))
+        return false;
+
     //No support for keys that did not use EC multiply
     std::string type = strKey.substr(2, 2);
     std::string flag = strKey.substr(4, 2);

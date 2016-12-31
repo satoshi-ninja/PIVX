@@ -64,6 +64,9 @@ public slots:
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
 
+    /** Show BIP 38 tool - default to Encryption tab */
+    void gotoBip38Tool();
+
     /** Encrypt the wallet */
     void encryptWallet(bool status);
     /** Backup the wallet */

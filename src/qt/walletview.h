@@ -86,6 +86,9 @@ public slots:
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
 
+    /** Show BIP 38 tool - default to Encryption tab */
+    void gotoBip38Tool();
+
     /** Show incoming transaction notification for new transactions.
 
         The new items are those between start and end inclusive, under the given parent item.
