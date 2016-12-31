@@ -4,7 +4,6 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "base58.h"
 #include "bip38.h"
 #include "rpcserver.h"
 #include "init.h"
@@ -19,6 +18,7 @@
 
 #include <fstream>
 #include <stdint.h>
+#include <secp256k1.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -517,8 +517,6 @@ Value bip38decrypt(const Array& params, bool fHelp)
         pwalletMain->nTimeFirstKey = 1; // 0 would be considered 'no value'
         pwalletMain->ScanForWalletTransactions(chainActive.Genesis(), true);
     }
-
-
 
     return result;
 }
