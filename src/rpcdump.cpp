@@ -452,16 +452,6 @@ Value bip38encrypt(const Array& params, bool fHelp)
 
 }
 
-std::string AddressToBIP38AddressHash(/**CBitcoinAddress address**/string strAddress)
-{
-    //double SHA256 hash the address
-    std::string strHash = Hash(strAddress);
-    strHash = Hash(strHash);
-
-    //return the first 4 bytes (2 hex each)
-    return strHash.substr(0, 8);
-}
-
 Value bip38decrypt(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)

@@ -65,26 +65,38 @@ void ComputeFactorB(uint256 seedB, uint256& factorB)
     Hash(factorB.begin(), 32, factorB.begin());
 }
 
+std::string AddressToBip38Hash(std::string address)
+{
+    uint256 addrCheck;
+    Hash((void *)address.c_str(), address.size(), addrCheck.begin());
+    Hash(addrCheck.begin(), 32, addrCheck.begin());
+
+    return HexStr(addrCheck).substr(0, 8);
+}
+
 bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint256& privKey, bool& fCompressed)
 {
     std::string strKey = DecodeBase58(strEncryptedKey.c_str());
 
-    //incorrect encoding of key, it must be 39 bytes - and another 4 bytes of base58 checksum
+    //incorrect encoding of key, it must be 39 bytes - and another 4 bytes for base58 checksum
     if(strKey.size() != (78 + 8))
         return false;
 
-    //No support for keys that did not use EC multiply
-    std::string type = strKey.substr(2, 2);
-    std::string flag = strKey.substr(4, 2);
+    //invalid prefix
+    if(uint256(ReverseEndianString(strKey.substr(0, 2))) != uint256(0x01))
+        return false;
+
+    uint256 type(ReverseEndianString(strKey.substr(2, 2)));
+    uint256 flag(ReverseEndianString(strKey.substr(4, 2)));
     std::string strAddressHash = strKey.substr(6, 8);
     std::string ownersalt = strKey.substr(14, 16);
     uint256 encryptedPart1(ReverseEndianString(strKey.substr(30, 16)));
     uint256 encryptedPart2(ReverseEndianString(strKey.substr(46, 32)));
 
-    fCompressed = (uint256(ReverseEndianString(flag)) & 0x20) != 0;
+    fCompressed = (flag & uint256(0x20)) != 0;
 
     //not ec multiplied
-    if(uint256(ReverseEndianString(type)) != uint256(0x43))
+    if(type == uint256(0x42))
     {
         uint512 hashed;
         encryptedPart1 = uint256(ReverseEndianString(strKey.substr(14, 32)));
@@ -109,8 +121,10 @@ bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint2
 
         return true;
     }
+    else if(type != uint256(0x43)) //invalid type
+        return false;
 
-    bool fLotSequence = (uint256(ReverseEndianString(flag)) & 0x04) != 0;
+    bool fLotSequence = (flag & 0x04) != 0;
 
     std::string prefactorSalt = ownersalt;
     if(fLotSequence)
@@ -141,26 +155,35 @@ bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint2
     DecryptAES(encryptedPart2, derivedHalf2, decryptedPart2);
 
     //xor decryptedPart2 and 2nd half of derived half 1
-    uint256 x0 = derivedHalf1>>128; //drop off the first half (note: endian)
-    uint256 x1 = decryptedPart2^x0;
-    uint256 seedbPart2 = x1>>64;
+    uint256 x0 = derivedHalf1 >> 128; //drop off the first half (note: endian)
+    uint256 x1 = decryptedPart2 ^ x0;
+    uint256 seedbPart2 = x1 >> 64;
 
     /** Decrypt encryptedpart1 to yield the remainder of seedb. **/
     uint256 decryptedPart1;
-    uint256 x2 = x1&uint256("0xffffffffffffffff"); // set x2 to seedbPart1 (still encrypted)
-    x2 = x2<<64; //make room to add encryptedPart1 to the front
-    x2 = encryptedPart1|x2; //combine with encryptedPart1
+    uint256 x2 = x1 & uint256("0xffffffffffffffff"); // set x2 to seedbPart1 (still encrypted)
+    x2 = x2 << 64; //make room to add encryptedPart1 to the front
+    x2 = encryptedPart1 | x2; //combine with encryptedPart1
     DecryptAES(x2, derivedHalf2, decryptedPart1);
 
     //decrypted part 1: seedb[0..15] xor derivedhalf1[0..15]
     uint256 x3 = derivedHalf1 & uint256("0xffffffffffffffffffffffffffffffff");
     uint256 seedbPart1 = decryptedPart1 ^ x3;
-    uint256 seedB = seedbPart1|(seedbPart2<<128);
+    uint256 seedB = seedbPart1 | (seedbPart2 << 128);
 
     uint256 factorB;
     ComputeFactorB(seedB, factorB);
 
     //multiply passfactor by factorb mod N to yield the priv key
     privKey = factorB;
-    return secp256k1_ec_privkey_tweak_mul(privKey.begin(), passfactor.begin());
+    if(!secp256k1_ec_privkey_tweak_mul(privKey.begin(), passfactor.begin()))
+        return false;
+
+    //double check that the address hash matches our final privkey
+    CKey k;
+    k.Set(privKey.begin(), privKey.end(), fCompressed);
+    CPubKey pubkey = k.GetPubKey();
+    string address = CBitcoinAddress(pubkey.GetID()).ToString();
+
+    return strAddressHash == AddressToBip38Hash(address);
 }
