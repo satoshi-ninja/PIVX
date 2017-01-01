@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>700</width>
-    <height>296</height>
+    <height>334</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Signatures - Sign / Verify a Message</string>
+   <string>BIP 38 Tool</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -373,6 +373,27 @@
          </item>
          <item>
           <widget class="QValidatedLineEdit" name="decryptedKeyOut_DEC"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QPushButton" name="importAddressButton_DEC">
+           <property name="text">
+            <string>Import Address</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Address:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="addressOut_DEC"/>
          </item>
         </layout>
        </item>

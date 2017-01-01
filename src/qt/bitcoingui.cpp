@@ -382,7 +382,7 @@ void BitcoinGUI::createActions(const NetworkStyle *networkStyle)
     signMessageAction->setStatusTip(tr("Sign messages with your DarkNet addresses to prove you own them"));
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify message..."), this);
     verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified DarkNet addresses"));
-    bip38ToolAction = new QAction(tr("&BIP38 tool"), this);
+    bip38ToolAction = new QAction(QIcon(":/icons/key"), tr("&BIP38 tool"), this);
     bip38ToolAction->setToolTip(tr("Encrypt and decrypt private keys using a passphrase"));
 
     openInfoAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation), tr("&Information"), this);

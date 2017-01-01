@@ -169,6 +169,7 @@ void Bip38ToolDialog::on_clearButton_ENC_clicked()
     ui->addressIn_ENC->setFocus();
 }
 
+CKey key;
 void Bip38ToolDialog::on_decryptKeyButton_DEC_clicked()
 {
     string strPassphrase = ui->passphraseIn_DEC->text().toStdString();
@@ -183,7 +184,58 @@ void Bip38ToolDialog::on_decryptKeyButton_DEC_clicked()
         return;
     }
 
+    key.Set(privKey.begin(), privKey.end(), fCompressed);
+    CPubKey pubKey = key.GetPubKey();
+    CBitcoinAddress address(pubKey.GetID());
+
     ui->decryptedKeyOut_DEC->setText(QString::fromStdString(HexStr(privKey)));
+    ui->addressOut_DEC->setText(QString::fromStdString(address.ToString()));
+}
+
+void Bip38ToolDialog::on_importAddressButton_DEC_clicked()
+{
+    CBitcoinAddress address(ui->addressOut_DEC->text().toStdString());
+    CPubKey pubkey = key.GetPubKey();
+
+    if(!address.IsValid() || !key.IsValid() || CBitcoinAddress(pubkey.GetID()).ToString() != address.ToString())
+    {
+        ui->statusLabel_DEC->setStyleSheet("QLabel { color: red; }");
+        ui->statusLabel_DEC->setText(tr("Data Not Valid.") + QString(" ") + tr("Please try again."));
+        return;
+    }
+
+    CKeyID vchAddress = pubkey.GetID();
+    {
+        ui->statusLabel_DEC->setStyleSheet("QLabel { color: red; }");
+        ui->statusLabel_DEC->setText(tr("Please wait while key is imported"));
+
+        pwalletMain->MarkDirty();
+        pwalletMain->SetAddressBook(vchAddress, "", "receive");
+
+        // Don't throw error in case a key is already there
+        if (pwalletMain->HaveKey(vchAddress))
+        {
+            ui->statusLabel_DEC->setStyleSheet("QLabel { color: red; }");
+            ui->statusLabel_DEC->setText(tr("Key Already Held By Wallet"));
+            return;
+        }
+
+        pwalletMain->mapKeyMetadata[vchAddress].nCreateTime = 1;
+
+        if (!pwalletMain->AddKeyPubKey(key, pubkey))
+        {
+            ui->statusLabel_DEC->setStyleSheet("QLabel { color: red; }");
+            ui->statusLabel_DEC->setText(tr("Error Adding Key To Wallet"));
+            return;
+        }
+
+        // whenever a key is imported, we need to scan the whole chain
+        pwalletMain->nTimeFirstKey = 1; // 0 would be considered 'no value'
+        pwalletMain->ScanForWalletTransactions(chainActive.Genesis(), true);
+    }
+
+    ui->statusLabel_DEC->setStyleSheet("QLabel { color: green; }");
+    ui->statusLabel_DEC->setText(tr("Successfully Added Private Key To Wallet"));
 }
 
 void Bip38ToolDialog::on_clearButton_DEC_clicked()
