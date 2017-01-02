@@ -412,7 +412,7 @@ Value bip38encrypt(const Array& params, bool fHelp)
             "\nEncrypts a private key corresponding to 'darknetaddress'.\n"
             "\nArguments:\n"
             "1. \"darknetaddress\"   (string, required) The darknet address for the private key (you must hold the key already)\n"
-            "2. \"passphrase\"   (string, required) The passphrase you want the private key to be encrypted with\n"
+            "2. \"passphrase\"   (string, required) The passphrase you want the private key to be encrypted with - Valid special chars: !#$%&'()*+,-./:;<=>?`{|}~ \n"
             "\nResult:\n"
             "\"key\"                (string) The encrypted private key\n"
             "\nExamples:\n"
@@ -421,7 +421,7 @@ Value bip38encrypt(const Array& params, bool fHelp)
     EnsureWalletIsUnlocked();
 
     string strAddress = params[0].get_str();
-    string strPassphrase = params[1].get_str().c_str();
+    string strPassphrase = params[1].get_str();
 
     CBitcoinAddress address;
     if (!address.SetString(strAddress))
