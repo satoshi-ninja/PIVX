@@ -46,6 +46,13 @@
           <number>0</number>
          </property>
          <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Address:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QValidatedLineEdit" name="addressIn_ENC">
            <property name="toolTip">
             <string>The DarkNet address to sign the message with</string>
@@ -95,27 +102,38 @@
         </layout>
        </item>
        <item>
-        <widget class="QPlainTextEdit" name="passphraseIn_ENC">
-         <property name="toolTip">
-          <string>Enter the message you want to sign here</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="encryptedKeyLabel_ENC">
-         <property name="text">
-          <string>Encrypted Key</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::PlainText</enum>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>Passphrase: </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="passphraseIn_ENC">
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2_ENC">
          <property name="spacing">
           <number>0</number>
          </property>
+         <item>
+          <widget class="QLabel" name="encryptedKeyLabel_ENC">
+           <property name="text">
+            <string>Encrypted Key:</string>
+           </property>
+           <property name="textFormat">
+            <enum>Qt::PlainText</enum>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QLineEdit" name="encryptedKeyOut_ENC">
            <property name="font">
@@ -237,7 +255,7 @@
        <item>
         <widget class="QLabel" name="infoLabel_DEC">
          <property name="text">
-          <string>Enter the BIP 38 encrypted private key. Enter the passphrase in the middle box. Click Decrypt Key to compute the private key.</string>
+          <string>Enter the BIP 38 encrypted private key. Enter the passphrase in the middle box. Click Decrypt Key to compute the private key. After the key is decrypted, clicking 'Import Address' will add this private key to the wallet.</string>
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -278,7 +296,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="passphraseIn_DEC"/>
+          <widget class="QLineEdit" name="passphraseIn_DEC">
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

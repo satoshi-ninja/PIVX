@@ -96,62 +96,67 @@ void Bip38ToolDialog::on_pasteButton_ENC_clicked()
     setAddress_ENC(QApplication::clipboard()->text());
 }
 
+QString specialChar = "!#$%&'()*+,-./:;<=>?`{|}~";
+QString validChar = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" + specialChar;
+bool isValidPassphrase(QString strPassphrase)
+{
+    for(int i = 0; i < strPassphrase.size(); i++)
+    {
+        if (!validChar.contains(strPassphrase[i], Qt::CaseSensitive))
+            return false;
+    }
+
+    return true;
+}
+
 void Bip38ToolDialog::on_encryptKeyButton_ENC_clicked()
 {
-//    if (!model)
-//        return;
-//
-//    /* Clear any text from boxes */
-//    ui->encryptedKeyOut_ENC->clear();
-//
-//    CBitcoinAddress addr(ui->addressIn_ENC->text().toStdString());
-//    if (!addr.IsValid())
-//    {
-//        ui->statusLabel_ENC->setStyleSheet("QLabel { color: red; }");
-//        ui->statusLabel_ENC->setText(tr("The entered address is invalid.") + QString(" ") + tr("Please check the address and try again."));
-//        return;
-//    }
-//    CKeyID keyID;
-//    if (!addr.GetKeyID(keyID))
-//    {
-//        ui->addressIn_ENC->setValid(false);
-//        ui->statusLabel_ENC->setStyleSheet("QLabel { color: red; }");
-//        ui->statusLabel_ENC->setText(tr("The entered address does not refer to a key.") + QString(" ") + tr("Please check the address and try again."));
-//        return;
-//    }
-//
-//    WalletModel::UnlockContext ctx(model->requestUnlock(true));
-//    if (!ctx.isValid())
-//    {
-//        ui->statusLabel_ENC->setStyleSheet("QLabel { color: red; }");
-//        ui->statusLabel_ENC->setText(tr("Wallet unlock was cancelled."));
-//        return;
-//    }
-//
-//    CKey key;
-//    if (!pwalletMain->GetKey(keyID, key))
-//    {
-//        ui->statusLabel_ENC->setStyleSheet("QLabel { color: red; }");
-//        ui->statusLabel_ENC->setText(tr("Private key for the entered address is not available."));
-//        return;
-//    }
+    if (!model)
+        return;
 
-//    CDataStream ss(SER_GETHASH, 0);
-//    ss << strMessageMagic;
-//    ss << ui->passphraseIn_ENC->document()->toPlainText().toStdString();
-//
-//    std::vector<unsigned char> vchSig;
-//    if (!key.SignCompact(Hash(ss.begin(), ss.end()), vchSig))
-//    {
-//        ui->statusLabel_ENC->setStyleSheet("QLabel { color: red; }");
-//        ui->statusLabel_ENC->setText(QString("<nobr>") + tr("Message signing failed.") + QString("</nobr>"));
-//        return;
-//    }
-//
-//    ui->statusLabel_ENC->setStyleSheet("QLabel { color: green; }");
-//    ui->statusLabel_ENC->setText(QString("<nobr>") + tr("Message signed.") + QString("</nobr>"));
-//
-//    ui->encryptedKeyOut_ENC->setText(QString::fromStdString(EncodeBase64(&vchSig[0], vchSig.size())));
+    QString qstrPassphrase = ui->passphraseIn_ENC->text();
+    if(!isValidPassphrase(qstrPassphrase))
+    {
+        ui->statusLabel_ENC->setStyleSheet("QLabel { color: red; }");
+        ui->statusLabel_ENC->setText(tr("The entered passphrase is invalid.") + QString(" ") + tr("Allowed: 0-9,a-z,A-Z,") + specialChar);
+        return;
+    }
+
+    CBitcoinAddress addr(ui->addressIn_ENC->text().toStdString());
+    if (!addr.IsValid())
+    {
+        ui->statusLabel_ENC->setStyleSheet("QLabel { color: red; }");
+        ui->statusLabel_ENC->setText(tr("The entered address is invalid.") + QString(" ") + tr("Please check the address and try again."));
+        return;
+    }
+
+    CKeyID keyID;
+    if (!addr.GetKeyID(keyID))
+    {
+        ui->addressIn_ENC->setValid(false);
+        ui->statusLabel_ENC->setStyleSheet("QLabel { color: red; }");
+        ui->statusLabel_ENC->setText(tr("The entered address does not refer to a key.") + QString(" ") + tr("Please check the address and try again."));
+        return;
+    }
+
+    WalletModel::UnlockContext ctx(model->requestUnlock(true));
+    if (!ctx.isValid())
+    {
+        ui->statusLabel_ENC->setStyleSheet("QLabel { color: red; }");
+        ui->statusLabel_ENC->setText(tr("Wallet unlock was cancelled."));
+        return;
+    }
+
+    CKey key;
+    if (!pwalletMain->GetKey(keyID, key))
+    {
+        ui->statusLabel_ENC->setStyleSheet("QLabel { color: red; }");
+        ui->statusLabel_ENC->setText(tr("Private key for the entered address is not available."));
+        return;
+    }
+
+    std::string encryptedKey = BIP38_Encrypt(addr.ToString(), qstrPassphrase.toStdString(), key.GetPrivKey_256());
+    ui->encryptedKeyOut_ENC->setText(QString::fromStdString(encryptedKey));
 }
 
 void Bip38ToolDialog::on_copyKeyButton_ENC_clicked()
@@ -194,6 +199,14 @@ void Bip38ToolDialog::on_decryptKeyButton_DEC_clicked()
 
 void Bip38ToolDialog::on_importAddressButton_DEC_clicked()
 {
+    WalletModel::UnlockContext ctx(model->requestUnlock(true));
+    if (!ctx.isValid())
+    {
+        ui->statusLabel_DEC->setStyleSheet("QLabel { color: red; }");
+        ui->statusLabel_DEC->setText(tr("Wallet unlock was cancelled."));
+        return;
+    }
+
     CBitcoinAddress address(ui->addressOut_DEC->text().toStdString());
     CPubKey pubkey = key.GetPubKey();
 
