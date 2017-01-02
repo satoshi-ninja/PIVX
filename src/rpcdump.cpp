@@ -411,7 +411,7 @@ Value bip38encrypt(const Array& params, bool fHelp)
             "bip38encrypt \"darknetaddress\"\n"
             "\nEncrypts a private key corresponding to 'darknetaddress'.\n"
             "\nArguments:\n"
-            "1. \"darknetaddress\"   (string, required) The darknet address for the private key\n"
+            "1. \"darknetaddress\"   (string, required) The darknet address for the private key (you must hold the key already)\n"
             "2. \"passphrase\"   (string, required) The passphrase you want the private key to be encrypted with\n"
             "\nResult:\n"
             "\"key\"                (string) The encrypted private key\n"
@@ -420,36 +420,27 @@ Value bip38encrypt(const Array& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    string strPassphrase = params[0].get_str();
-    string strKey = DecodeBase58(params[1].get_str().c_str());
+    string strAddress = params[0].get_str();
+    string strPassphrase = params[1].get_str().c_str();
 
+    CBitcoinAddress address;
+    if (!address.SetString(strAddress))
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid DarkNet address");
+    CKeyID keyID;
+    if (!address.GetKeyID(keyID))
+        throw JSONRPCError(RPC_TYPE_ERROR, "Address does not refer to a key");
+    CKey vchSecret;
+    if (!pwalletMain->GetKey(keyID, vchSecret))
+        throw JSONRPCError(RPC_WALLET_ERROR, "Private key for address " + strAddress + " is not known");
 
-    //chars 14..29 of key is ownersalt for consistency check for now but should random generate
-    string ownersalt = strKey.substr(14,16);
+    uint256 privKey = vchSecret.GetPrivKey_256();
+    string encryptedOut = BIP38_Encrypt(strAddress, strPassphrase, privKey);
 
+    Object result;
+    result.push_back(Pair("Addess", strAddress));
+    result.push_back(Pair("Encrypted Key", encryptedOut));
 
-    const char* pass = strPassphrase.c_str();
-    uint64_t s = uint256(ReverseEndianString(ownersalt)).Get64();
-
-    //passfactor is result of scrypt hash
-    uint256 passfactor;
-    char* out = BEGIN(passfactor);
-    scrypt_hash(pass, strPassphrase.size(), BEGIN(s), ownersalt.size()/2, out, 16384, 8, 8, 32);
-
-
-    //compute ec point g*passfactor
-    CPubKey passpoint;
-    int clen = 65;
-    if(secp256k1_ec_pubkey_create((unsigned char*)BEGIN(passpoint), &clen, passfactor.begin(), true) == 0)
-      return "passpoint failed";
-
-
-    //how do these bytes output passphrase????
-    std::stringstream ss;
-    ss << 0x2CE9B3E1FF39E253;
-
-    return ss.str() + HexStr(ownersalt)  + HexStr(passpoint);
-
+    return result;
 }
 
 Value bip38decrypt(const Array& params, bool fHelp)
@@ -457,10 +448,11 @@ Value bip38decrypt(const Array& params, bool fHelp)
     if (fHelp || params.size() != 2)
         throw runtime_error(
             "bip38decrypt \"darknetaddress\"\n"
-            "\nDecrypts a password protected private key.\n"
+            "\nDecrypts and then imports password protected private key.\n"
             "\nArguments:\n"
-            "1. \"encryptedkey\"   (string, required) The encrypted private key\n"
-            "2. \"passphrase\"   (string, required) The passphrase you want the private key to be encrypted with\n"
+            "1. \"passphrase\"   (string, required) The passphrase you want the private key to be encrypted with\n"
+            "2. \"encryptedkey\"   (string, required) The encrypted private key\n"
+
             "\nResult:\n"
             "\"key\"                (string) The decrypted private key\n"
             "\nExamples:\n"
@@ -487,6 +479,7 @@ Value bip38decrypt(const Array& params, bool fHelp)
         throw JSONRPCError(RPC_WALLET_ERROR, "Private Key Not Valid");
 
     CPubKey pubkey = key.GetPubKey();
+    pubkey.IsCompressed();
     assert(key.VerifyPubKey(pubkey));
     result.push_back(Pair("Address", CBitcoinAddress(pubkey.GetID()).ToString()));
     CKeyID vchAddress = pubkey.GetID();

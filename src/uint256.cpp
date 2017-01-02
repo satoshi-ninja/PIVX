@@ -261,6 +261,8 @@ template std::string base_uint<256>::ToStringReverseEndian() const;
 
 // Explicit instantiations for base_uint<512>
 template base_uint<512>::base_uint(const std::string&);
+template base_uint<512>& base_uint<512>::operator<<=(unsigned int);
+template base_uint<512>& base_uint<512>::operator>>=(unsigned int);
 template std::string base_uint<512>::GetHex() const;
 template std::string base_uint<512>::ToString() const;
 template std::string base_uint<512>::ToStringReverseEndian() const;
