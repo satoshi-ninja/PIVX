@@ -76,9 +76,9 @@ MultiSend will not be activated unless you have clicked Activate</string>
   <widget class="QLabel" name="message">
    <property name="geometry">
     <rect>
-     <x>240</x>
+     <x>290</x>
      <y>200</y>
-     <width>381</width>
+     <width>351</width>
      <height>91</height>
     </rect>
    </property>
