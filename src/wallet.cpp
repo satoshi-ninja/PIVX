@@ -2256,16 +2256,40 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend,
 
                 CAmount nTotalValue = nValue + nFeeRet;
                 double dPriority = 0;
+
                 // vouts to the payees
-                BOOST_FOREACH (const PAIRTYPE(CScript, CAmount)& s, vecSend)
+                if(coinControl && !coinControl->fSplitBlock)
                 {
-                    CTxOut txout(s.second, s.first);
-                    if (txout.IsDust(::minRelayTxFee))
+                    BOOST_FOREACH (const PAIRTYPE(CScript, CAmount)& s, vecSend)
                     {
-                        strFailReason = _("Transaction amount too small");
-                        return false;
+                        CTxOut txout(s.second, s.first);
+                        if (txout.IsDust(::minRelayTxFee))
+                        {
+                            strFailReason = _("Transaction amount too small");
+                            return false;
+                        }
+                        txNew.vout.push_back(txout);
                     }
-                    txNew.vout.push_back(txout);
+                }
+                else //UTXO Splitter Transaction
+                {
+                    int nSplitBlock = coinControl->nSplitBlock;
+                    if(nSplitBlock < 1)
+                        nSplitBlock = 1;
+
+                    BOOST_FOREACH (const PAIRTYPE(CScript, CAmount)& s, vecSend)
+                    {
+                        for(int i = 0; i < nSplitBlock; i++)
+                        {
+                            if(i == nSplitBlock - 1)
+                            {
+                                uint64_t nRemainder = s.second % nSplitBlock;
+                                txNew.vout.push_back(CTxOut((s.second / nSplitBlock) + nRemainder, s.first));
+                            }
+                            else
+                                txNew.vout.push_back(CTxOut(s.second / nSplitBlock, s.first));
+                        }
+                    }
                 }
 
                 // Choose coins to use
@@ -3472,6 +3496,83 @@ bool CWallet::GetDestData(const CTxDestination &dest, const std::string &key, st
         }
     }
     return false;
+}
+
+bool CWallet::MultiSend()
+{
+    if ( IsInitialBlockDownload() || IsLocked() )
+        return false;
+
+    int64_t nAmount = 0;
+    {
+        LOCK(cs_wallet);
+        std::vector<COutput> vCoins;
+        AvailableCoins(vCoins);
+        BOOST_FOREACH(const COutput& out, vCoins)
+        {
+            CTxDestination address;
+            if(!ExtractDestination(out.tx->vout[out.i].scriptPubKey, address))
+                continue;
+
+            if (chainActive.Tip()->nHeight <= nLastMultiSendHeight )
+                return false;
+
+            if (!(out.tx->IsCoinStake() && out.tx->GetBlocksToMaturity() == 0 && out.tx->GetDepthInMainChain() == COINBASE_MATURITY + 1))
+                return false;
+
+            //Disabled Addresses won't send MultiSend transactions
+            if(vDisabledAddresses.size() > 0)
+            {
+                for(unsigned int i = 0; i < vDisabledAddresses.size(); i++)
+                {
+                    if(vDisabledAddresses[i] == CBitcoinAddress(address).ToString())
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            // create new coin control, populate it with the selected utxo, create sending vector
+            CCoinControl* cControl = new CCoinControl();
+            uint256 txhash = out.tx->GetHash();
+            COutPoint outpt(txhash, out.i);
+            cControl->Select(outpt);
+            CWalletTx wtx;
+            CReserveKey keyChange(this); // this change address does not end up being used, because change is returned with coin control switch
+            int64_t nFeeRet = 0;
+            vector<pair<CScript, int64_t> > vecSend;
+
+            // loop through multisend vector and add amounts and addresses to the sending vector
+            const isminefilter filter = ISMINE_SPENDABLE;
+            for(unsigned int i = 0; i < vMultiSend.size(); i++)
+            {
+                // MultiSend vector is a pair of 1)Address as a std::string 2) Percent of stake to send as an int
+                nAmount = ( ( out.tx->GetCredit(filter) - out.tx->GetDebit(filter) ) * vMultiSend[i].second )/100;
+                CBitcoinAddress strAddSend(vMultiSend[i].first);
+                CScript scriptPubKey;
+                scriptPubKey = GetScriptForDestination(strAddSend.Get());
+                vecSend.push_back(make_pair(scriptPubKey, nAmount));
+            }
+
+            // Create the transaction and commit it to the network
+            string strErr;
+            if (!CreateTransaction(vecSend, wtx, keyChange, nFeeRet, strErr, cControl, ALL_COINS, false, CAmount(0)))
+                LogPrintf("MultiSend createtransaction failed\n");
+
+            if(!CommitTransaction(wtx, keyChange))
+                LogPrintf("MultiSend transaction commit failed\n");
+            else
+                fMultiSendNotify = true;
+            delete cControl;
+
+            //write nLastMultiSendHeight to DB
+            CWalletDB walletdb(strWalletFile);
+            nLastMultiSendHeight = chainActive.Tip()->nHeight;
+            if(!walletdb.WriteMSettings(fMultiSend, nLastMultiSendHeight))
+                LogPrintf("Failed to write MultiSend setting to DB\n");
+        }
+    }
+    return true;
 }
 
 CKeyPool::CKeyPool()

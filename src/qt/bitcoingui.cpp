@@ -22,6 +22,7 @@
 #ifdef ENABLE_WALLET
 #include "walletframe.h"
 #include "walletmodel.h"
+#include "tradingdialog.h"
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -98,10 +99,12 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
     openRPCConsoleAction(0),
     openAction(0),
     showHelpMessageAction(0),
+    multiSendAction(0),
     trayIcon(0),
     trayIconMenu(0),
     notificator(0),
     rpcConsole(0),
+    tradingWindow(0),
     prevBlocks(0),
     spinnerFrame(0)
 {
@@ -146,6 +149,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
     {
         /** Create wallet frame*/
         walletFrame = new WalletFrame(this);
+        tradingWindow = new tradingDialog(this); // Bittrex trading
     } else
 #endif // ENABLE_WALLET
     {
@@ -240,6 +244,11 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
 
     // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), rpcConsole, SLOT(hide()));
+
+    connect(openTradingwindowAction, SIGNAL(triggered()), tradingWindow, SLOT(show()));
+
+    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), tradingWindow, SLOT(hide()));
 
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
@@ -384,7 +393,9 @@ void BitcoinGUI::createActions(const NetworkStyle *networkStyle)
     verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified DarkNet addresses"));
     bip38ToolAction = new QAction(QIcon(":/icons/key"), tr("&BIP38 tool"), this);
     bip38ToolAction->setToolTip(tr("Encrypt and decrypt private keys using a passphrase"));
-
+    multiSendAction = new QAction(QIcon(":/icons/edit"), tr("&MultiSend"), this);
+    multiSendAction->setToolTip(tr("MultiSend Settings"));
+    multiSendAction->setCheckable(true);
     openInfoAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation), tr("&Information"), this);
     openInfoAction->setStatusTip(tr("Show diagnostic information"));
     openRPCConsoleAction = new QAction(QIcon(":/icons/debugwindow"), tr("&Debug console"), this);
@@ -407,6 +418,9 @@ void BitcoinGUI::createActions(const NetworkStyle *networkStyle)
 
     openAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("Open &URI..."), this);
     openAction->setStatusTip(tr("Open a DarkNet: URI or payment request"));
+
+    openTradingwindowAction = new QAction(QIcon(":/icons/trade"), tr("&Trading window"), this);
+    openTradingwindowAction->setStatusTip(tr("Bittrex trading window"));
 
     showHelpMessageAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
@@ -432,6 +446,7 @@ void BitcoinGUI::createActions(const NetworkStyle *networkStyle)
         connect(usedSendingAddressesAction, SIGNAL(triggered()), walletFrame, SLOT(usedSendingAddresses()));
         connect(usedReceivingAddressesAction, SIGNAL(triggered()), walletFrame, SLOT(usedReceivingAddresses()));
         connect(openAction, SIGNAL(triggered()), this, SLOT(openClicked()));
+        connect(multiSendAction, SIGNAL(triggered()), this, SLOT(gotoMultiSendDialog()));
     }
 #endif // ENABLE_WALLET
 }
@@ -469,9 +484,13 @@ void BitcoinGUI::createMenuBar()
         settings->addAction(unlockWalletAction);
         settings->addAction(lockWalletAction);
         settings->addAction(bip38ToolAction);
+        settings->addAction(multiSendAction);
         settings->addSeparator();
     }
     settings->addAction(optionsAction);
+
+    QMenu *trading = appMenuBar->addMenu(tr("&Trade"));
+    trading->addAction(openTradingwindowAction);
 
     if(walletFrame)
     {
@@ -655,6 +674,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(bip38ToolAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
+    trayIconMenu->addAction(openTradingwindowAction);
     trayIconMenu->addAction(openInfoAction);
     trayIconMenu->addAction(openRPCConsoleAction);
     trayIconMenu->addAction(openNetworkAction);
@@ -762,6 +782,18 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 void BitcoinGUI::gotoBip38Tool()
 {
     if (walletFrame) walletFrame->gotoBip38Tool();
+
+void BitcoinGUI::gotoTradingPage()
+{
+    openTradingwindowAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoTradingPage();
+}
+
+void BitcoinGUI::gotoMultiSendDialog()
+{
+    multiSendAction->setChecked(true);
+    if(walletFrame)
+        walletFrame->gotoMultiSendDialog();
 }
 
 #endif // ENABLE_WALLET
@@ -1012,7 +1044,7 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
 void BitcoinGUI::incomingTransaction(const QString& date, int unit, const CAmount& amount, const QString& type, const QString& address)
 {
     // On new transaction, make an info balloon
-    message((amount)<0 ? tr("Sent transaction") : tr("Incoming transaction"),
+    message((amount)<0 ? (fMultiSendNotify == true ? tr("Sent MultiSend transaction") : tr("Sent transaction") ) : tr("Incoming transaction"),
              tr("Date: %1\n"
                 "Amount: %2\n"
                 "Type: %3\n"
@@ -1021,6 +1053,8 @@ void BitcoinGUI::incomingTransaction(const QString& date, int unit, const CAmoun
                   .arg(BitcoinUnits::formatWithUnit(unit, amount, true))
                   .arg(type)
                   .arg(address), CClientUIInterface::MSG_INFORMATION);
+
+    pwalletMain->fMultiSendNotify = false;
 }
 #endif // ENABLE_WALLET
 
@@ -1057,17 +1091,20 @@ bool BitcoinGUI::eventFilter(QObject *object, QEvent *event)
 
 void BitcoinGUI::setStakingStatus()
 {
+    if(pwalletMain)
+        fMultiSend = pwalletMain->fMultiSend;
+
     if(nLastCoinStakeSearchInterval)
     {
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_active").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        labelStakingIcon->setToolTip(tr("Staking is active"));
+        labelStakingIcon->setToolTip(tr("Staking is active\n MultiSend: %1").arg(fMultiSend ? tr("Active") : tr("Not Active")));
     }
     else
     {
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_inactive").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        labelStakingIcon->setToolTip(tr("Staking is not active"));
+        labelStakingIcon->setToolTip(tr("Staking is not active\n MultiSend: %1").arg(fMultiSend ? tr("Active") : tr("Not Active")));
     }
 }
 

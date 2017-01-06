@@ -11,6 +11,7 @@
 #include "clientmodel.h"
 #include "guiutil.h"
 #include "masternodeconfig.h"
+#include "multisenddialog.h"
 #include "optionsmodel.h"
 #include "overviewpage.h"
 #include "receivecoinsdialog.h"
@@ -19,6 +20,7 @@
 #include "transactiontablemodel.h"
 #include "transactionview.h"
 #include "walletmodel.h"
+#include "tradingdialog.h"
 
 #include "ui_interface.h"
 
@@ -39,7 +41,7 @@ WalletView::WalletView(QWidget *parent):
 {
     // Create tabs
     overviewPage = new OverviewPage();
-
+    tradingPage = new tradingDialog(this);
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
     QHBoxLayout *hbox_buttons = new QHBoxLayout();
@@ -75,6 +77,7 @@ WalletView::WalletView(QWidget *parent):
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
+    addWidget(tradingPage);
 
     QSettings settings;
     if (settings.value("fShowMasternodesTab").toBool()) {
@@ -198,6 +201,11 @@ void WalletView::gotoHistoryPage()
     setCurrentWidget(transactionsPage);
 }
 
+void WalletView::gotoTradingPage()
+{
+    setCurrentWidget(tradingPage);
+}
+
 void WalletView::gotoMasternodePage()
 {
     QSettings settings;
@@ -249,6 +257,12 @@ void WalletView::gotoBip38Tool()
     //bip38ToolDialog->setAttribute(Qt::WA_DeleteOnClose);
     bip38ToolDialog->setModel(walletModel);
     bip38ToolDialog->showTab_ENC(true);
+
+void WalletView::gotoMultiSendDialog()
+{
+    MultiSendDialog *multiSendDialog = new MultiSendDialog(this);
+    multiSendDialog->setModel(walletModel);
+    multiSendDialog->show();
 }
 
 bool WalletView::handlePaymentRequest(const SendCoinsRecipient& recipient)
