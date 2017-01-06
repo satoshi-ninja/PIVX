@@ -260,7 +260,7 @@
       <string>Buy DNET</string>
      </property>
      <property name="icon">
-      <iconset resource="../darknet.qrc">
+      <iconset resource="../pivx.qrc">
        <normaloff>:/icons/bitcoin</normaloff>:/icons/bitcoin</iconset>
      </property>
     </widget>
@@ -1569,7 +1569,7 @@
       <string>Sell DNET</string>
      </property>
      <property name="icon">
-      <iconset resource="../darknet.qrc">
+      <iconset resource="../pivx.qrc">
        <normaloff>:/icons/bitcoin</normaloff>:/icons/bitcoin</iconset>
      </property>
     </widget>
@@ -2759,7 +2759,7 @@
       <string>Generate Darknet Deposit Address</string>
      </property>
      <property name="icon">
-      <iconset resource="../darknet.qrc">
+      <iconset resource="../pivx.qrc">
        <normaloff>:/icons/bitcoin</normaloff>:/icons/bitcoin</iconset>
      </property>
     </widget>
@@ -3021,7 +3021,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap resource="../darknet.qrc">:/icons/transaction_1</pixmap>
+       <pixmap resource="../pivx.qrc">:/icons/transaction_1</pixmap>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
@@ -3068,7 +3068,7 @@
       <string>Update API Keys</string>
      </property>
      <property name="icon">
-      <iconset resource="../darknet.qrc">
+      <iconset resource="../pivx.qrc">
        <normaloff>:/icons/bitcoin</normaloff>:/icons/bitcoin</iconset>
      </property>
     </widget>
@@ -3223,7 +3223,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="../darknet.qrc"/>
+  <include location="../pivx.qrc"/>
  </resources>
  <connections/>
 </ui>

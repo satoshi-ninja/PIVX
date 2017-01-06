@@ -257,6 +257,7 @@ void WalletView::gotoBip38Tool()
     //bip38ToolDialog->setAttribute(Qt::WA_DeleteOnClose);
     bip38ToolDialog->setModel(walletModel);
     bip38ToolDialog->showTab_ENC(true);
+}
 
 void WalletView::gotoMultiSendDialog()
 {
