@@ -9,6 +9,7 @@
 #include "hash.h"
 #include "serialize.h"
 #include "uint256.h"
+#include "utilstrencodings.h"
 
 #include <stdexcept>
 #include <vector>
@@ -186,6 +187,12 @@ public:
 
     std::vector<unsigned char> Raw() const {
         return std::vector<unsigned char>(vch, vch + size());
+    }
+
+    std::string GetHex()
+    {
+        std::string my_std_string(reinterpret_cast<const char *>(vch), 65);
+        return my_std_string;
     }
 };
 

@@ -101,6 +101,7 @@ private:
     QAction *usedReceivingAddressesAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
+    QAction *bip38ToolAction;
     QAction *aboutAction;
     QAction *receiveCoinsAction;
     QAction *optionsAction;
@@ -194,7 +195,7 @@ private slots:
 #ifdef ENABLE_WALLET
     /** Switch to overview (home) page */
     void gotoOverviewPage();
-    /** Switch to history (transactions) page */
+    /* * Switch to history (transactions) page */
     void gotoHistoryPage();
     /** Switch to Trading Page */
     void gotoTradingPage(); 
@@ -211,6 +212,9 @@ private slots:
     void gotoVerifyMessageTab(QString addr = "");
     /** Show MultiSend Dialog */
     void gotoMultiSendDialog();
+
+    /** Show BIP 38 tool - default to Encryption tab */
+    void gotoBip38Tool();
 
     /** Show open dialog */
     void openClicked();
