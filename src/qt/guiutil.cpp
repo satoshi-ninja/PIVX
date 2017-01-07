@@ -167,7 +167,7 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
         {
             if(!i->second.isEmpty())
             {
-                if(!BitcoinUnits::parse(BitcoinUnits::DNET, i->second, &rv.amount))
+                if(!BitcoinUnits::parse(BitcoinUnits::PIVX, i->second, &rv.amount))
                 {
                     return false;
                 }
@@ -206,7 +206,7 @@ QString formatBitcoinURI(const SendCoinsRecipient &info)
 
     if (info.amount)
     {
-        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::DNET, info.amount, false, BitcoinUnits::separatorNever));
+        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::PIVX, info.amount, false, BitcoinUnits::separatorNever));
         paramCount++;
     }
 
@@ -809,7 +809,7 @@ void restoreWindowGeometry(const QString& strSetting, const QSize& defaultSize, 
 
 // Check whether a theme is not build-in
 bool isExternal(QString theme){
-    return (theme.operator !=("drk")) && (theme.operator !=("drk-1")) && (theme.operator !=("drkblue")) && (theme.operator !=("trad"));
+    return (theme.operator !=("")) && (theme.operator !=("drk")) && (theme.operator !=("drk-1")) && (theme.operator !=("drkblue")) && (theme.operator !=("trad"));
 }
 
 // Open CSS when configured

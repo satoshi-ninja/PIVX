@@ -63,7 +63,7 @@ void OptionsModel::Init()
 
     // Display
     if (!settings.contains("nDisplayUnit"))
-        settings.setValue("nDisplayUnit", BitcoinUnits::DNET);
+        settings.setValue("nDisplayUnit", BitcoinUnits::PIVX);
     nDisplayUnit = settings.value("nDisplayUnit").toInt();
 
     if (!settings.contains("strThirdPartyTxUrls"))
@@ -77,11 +77,11 @@ void OptionsModel::Init()
     if (!settings.contains("nObfuscationRounds"))
         settings.setValue("nObfuscationRounds", 2);
 
-    if (!settings.contains("nAnonymizeDarknetAmount"))
-        settings.setValue("nAnonymizeDarknetAmount", 1000);
+    if (!settings.contains("nAnonymizePIVXAmount"))
+        settings.setValue("nAnonymizePIVXAmount", 1000);
 
     nObfuscationRounds = settings.value("nObfuscationRounds").toLongLong();
-    nAnonymizeDarknetAmount = settings.value("nAnonymizeDarknetAmount").toLongLong();
+    nAnonymizePIVXAmount = settings.value("nAnonymizePIVXAmount").toLongLong();
 
     if (!settings.contains("fShowMasternodesTab"))
         settings.setValue("fShowMasternodesTab", masternodeConfig.getCount());
@@ -148,8 +148,8 @@ void OptionsModel::Init()
 
     if (settings.contains("nObfuscationRounds"))
         SoftSetArg("-obfuscationrounds", settings.value("nObfuscationRounds").toString().toStdString());
-    if (settings.contains("nAnonymizeDarknetAmount"))
-        SoftSetArg("-anonymizedarknetamount", settings.value("nAnonymizeDarknetAmount").toString().toStdString());
+    if (settings.contains("nAnonymizePIVXAmount"))
+        SoftSetArg("-anonymizedarknetamount", settings.value("nAnonymizePIVXAmount").toString().toStdString());
 
     language = settings.value("language").toString();
 }
@@ -232,7 +232,7 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
         case ObfuscationRounds:
             return QVariant(nObfuscationRounds);
         case AnonymizePIVXAmount:
-            return QVariant(nAnonymizeDarknetAmount);
+            return QVariant(nAnonymizePIVXAmount);
         case Listen:
             return settings.value("fListen");
         default:
@@ -346,9 +346,9 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             emit obfuscationRoundsChanged(nObfuscationRounds);
             break;
         case AnonymizePIVXAmount:
-            nAnonymizeDarknetAmount = value.toInt();
-            settings.setValue("nAnonymizeDarknetAmount", nAnonymizeDarknetAmount);
-            emit anonymizeDarknetAmountChanged(nAnonymizeDarknetAmount);
+            nAnonymizePIVXAmount = value.toInt();
+            settings.setValue("nAnonymizePIVXAmount", nAnonymizePIVXAmount);
+            emit anonymizeDarknetAmountChanged(nAnonymizePIVXAmount);
             break;
         case CoinControlFeatures:
             fCoinControlFeatures = value.toBool();

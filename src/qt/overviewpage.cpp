@@ -33,7 +33,7 @@ class TxViewDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
 public:
-    TxViewDelegate(): QAbstractItemDelegate(), unit(BitcoinUnits::DNET)
+    TxViewDelegate(): QAbstractItemDelegate(), unit(BitcoinUnits::PIVX)
     {
 
     }
@@ -285,7 +285,7 @@ void OverviewPage::setWalletModel(WalletModel *model)
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
     }
 
-    // update the display unit, to not use the default ("DNET")
+    // update the display unit, to not use the default ("PIVX")
     updateDisplayUnit();
 }
 
@@ -325,7 +325,7 @@ void OverviewPage::updateObfuscationProgress()
     if(!pwalletMain) return;
 
     QString strAmountAndRounds;
-    QString strAnonymizeDarknetAmount = BitcoinUnits::formatHtmlWithUnit(nDisplayUnit, nAnonymizeDarknetAmount * COIN, false, BitcoinUnits::separatorAlways);
+    QString strAnonymizeDarknetAmount = BitcoinUnits::formatHtmlWithUnit(nDisplayUnit, nAnonymizePIVXAmount * COIN, false, BitcoinUnits::separatorAlways);
 
     if(currentBalance == 0)
     {
@@ -361,11 +361,11 @@ void OverviewPage::updateObfuscationProgress()
     CAmount nMaxToAnonymize = nAnonymizableBalance + currentAnonymizedBalance + nDenominatedUnconfirmedBalance;
 
     // If it's more than the anon threshold, limit to that.
-    if(nMaxToAnonymize > nAnonymizeDarknetAmount*COIN) nMaxToAnonymize = nAnonymizeDarknetAmount*COIN;
+    if(nMaxToAnonymize > nAnonymizePIVXAmount*COIN) nMaxToAnonymize = nAnonymizePIVXAmount*COIN;
 
     if(nMaxToAnonymize == 0) return;
 
-    if(nMaxToAnonymize >= nAnonymizeDarknetAmount * COIN) {
+    if(nMaxToAnonymize >= nAnonymizePIVXAmount * COIN) {
         ui->labelAmountRounds->setToolTip(tr("Found enough compatible inputs to anonymize %1")
                                           .arg(strAnonymizeDarknetAmount));
         strAnonymizeDarknetAmount = strAnonymizeDarknetAmount.remove(strAnonymizeDarknetAmount.indexOf("."), BitcoinUnits::decimals(nDisplayUnit) + 1);
@@ -545,7 +545,7 @@ void OverviewPage::toggleObfuscation(){
 
         /* show obfuscation configuration if client has defaults set */
 
-        if(nAnonymizeDarknetAmount == 0){
+        if(nAnonymizePIVXAmount == 0){
             ObfuscationConfig dlg(this);
             dlg.setModel(walletModel);
             dlg.exec();

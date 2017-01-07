@@ -1,9 +1,9 @@
 /* src/config/pivx-config.h.  Generated from pivx-config.h.in by configure.  */
 /* src/config/pivx-config.h.in.  Generated from configure.ac by autoheader.  */
 
-#ifndef DNET_CONFIG_H
+#ifndef PIVX_CONFIG_H
 
-#define DNET_CONFIG_H
+#define PIVX_CONFIG_H
 
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
@@ -337,4 +337,4 @@
 /* Define for large files, on AIX-style hosts. */
 /* #undef _LARGE_FILES */
 
-#endif //DNET_CONFIG_H
+#endif //PIVX_CONFIG_H
