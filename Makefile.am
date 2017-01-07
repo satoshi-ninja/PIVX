@@ -32,7 +32,7 @@ OSX_PACKAGING = $(OSX_DEPLOY_SCRIPT) $(OSX_FANCY_PLIST) $(OSX_INSTALLER_ICONS) \
   $(top_srcdir)/contrib/macdeploy/detached-sig-create.sh
 
 COVERAGE_INFO = baseline_filtered_combined.info baseline.info block_test.info \
-  leveldb_baseline.info test_darknet_filtered.info total_coverage.info \
+  leveldb_baseline.info test_pivx_filtered.info total_coverage.info \
   baseline_filtered.info block_test_filtered.info \
   leveldb_baseline_filtered.info test_pivx_coverage.info test_pivx.info
 
@@ -176,7 +176,7 @@ test_pivx_coverage.info: baseline_filtered_combined.info test_pivx_filtered.info
 total_coverage.info:  baseline_filtered_combined.info test_pivx_filtered.info block_test_filtered.info
 	$(LCOV) -a baseline_filtered.info -a leveldb_baseline_filtered.info -a test_pivx_filtered.info -a block_test_filtered.info -o $@ | $(GREP) "\%" | $(AWK) '{ print substr($$3,2,50) "/" $$5 }' > coverage_percent.txt
 
-test_darknet.coverage/.dirstamp:  test_pivx_coverage.info
+test_pivx.coverage/.dirstamp:  test_pivx_coverage.info
 	$(GENHTML) -s $< -o $(@D)
 	@touch $@
 

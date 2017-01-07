@@ -90,7 +90,7 @@ private:
 signals:
     void displayUnitChanged(int unit);
     void obfuscationRoundsChanged(int);
-    void anonymizeDarknetAmountChanged(int);
+    void anonymizePIVXAmountChanged(int);
     void coinControlFeaturesChanged(bool);
 };
 

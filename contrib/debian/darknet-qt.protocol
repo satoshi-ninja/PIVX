@@ -1,6 +1,6 @@
 [Protocol]
-exec=darknet-qt '%u'
-protocol=darknet
+exec=pivx-qt '%u'
+protocol=pivx
 input=none
 output=none
 helper=true

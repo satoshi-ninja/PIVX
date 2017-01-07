@@ -176,8 +176,8 @@
         <translation>Conferma la cifratura del portafoglio</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DNET&lt;/b&gt;!</source>
-        <translation>Attenzione: se crittografi il tuo portafoglio e perdi la tua parola d'ordine, &lt;b&gt;PERDERAI TUTTI I TUOI DNET&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR pivx&lt;/b&gt;!</source>
+        <translation>Attenzione: se crittografi il tuo portafoglio e perdi la tua parola d'ordine, &lt;b&gt;PERDERAI TUTTI I TUOI pivx&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -833,28 +833,28 @@ Indirizzo: %4
         <translation>Selezionare il livello di privacy</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 1000 DNET</source>
-        <translation>Usa 2 separati masternode per mischiare fino al 1000 DNET</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000 pivx</source>
+        <translation>Usa 2 separati masternode per mischiare fino al 1000 pivx</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 1000 DNET</source>
-        <translation>Usa 8 separati masternode per mischiare fino al 1000 DNET</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000 pivx</source>
+        <translation>Usa 8 separati masternode per mischiare fino al 1000 pivx</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
         <translation>Usa 16 separati masternode</translation>
     </message>
     <message>
-        <source>This option is the quickest and will cost about ~0.025 DNET to anonymize 1000 DNET</source>
-        <translation>Questa opzione è la più veloce e ti costerà ~0.025DNET circa per anonimizzare 1000DNET</translation>
+        <source>This option is the quickest and will cost about ~0.025 pivx to anonymize 1000 pivx</source>
+        <translation>Questa opzione è la più veloce e ti costerà ~0.025pivx circa per anonimizzare 1000pivx</translation>
     </message>
     <message>
-        <source>This option is moderately fast and will cost about 0.05 DNET to anonymize 1000 DNET</source>
-        <translation>Questa opzione è moderatamente veloce e costerà 0.05DNET circa per anonimizzare 1000DNET</translation>
+        <source>This option is moderately fast and will cost about 0.05 pivx to anonymize 1000 pivx</source>
+        <translation>Questa opzione è moderatamente veloce e costerà 0.05pivx circa per anonimizzare 1000pivx</translation>
     </message>
     <message>
-        <source>0.1 DNET per 1000 DNET you anonymize.</source>
-        <translation>0.1DNET ogni 1000DNET anonimizzati.</translation>
+        <source>0.1 pivx per 1000 pivx you anonymize.</source>
+        <translation>0.1pivx ogni 1000pivx anonimizzati.</translation>
     </message>
     <message>
         <source>This is the slowest and most secure option. Using maximum anonymity will cost</source>
@@ -1385,8 +1385,8 @@ Più URL vengono separati da una barra verticale |.</translation>
         <translation>Ammontare e Round:</translation>
     </message>
     <message>
-        <source>0 DNET / 0 Rounds</source>
-        <translation>0 DNET / 0 Round</translation>
+        <source>0 pivx / 0 Rounds</source>
+        <translation>0 pivx / 0 Round</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -3118,8 +3118,8 @@ Più URL vengono separati da una barra verticale |.</translation>
         <translation>Invia pivx</translation>
     </message>
     <message>
-        <source>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 DNET.</source>
-        <translation>SwiftTX non supporta ancora l'invio di somme così alte. Le transazioni sono attualmente limitate al %1 DNET.</translation>
+        <source>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 pivx.</source>
+        <translation>SwiftTX non supporta ancora l'invio di somme così alte. Le transazioni sono attualmente limitate al %1 pivx.</translation>
     </message>
 </context>
 <context>
@@ -3228,8 +3228,8 @@ Più URL vengono separati da una barra verticale |.</translation>
         <translation>Impossibile trovare fondi sufficienti Obfuscate denominati per questa transazione.</translation>
     </message>
     <message>
-        <source>Unable to locate enough Obfuscate non-denominated funds for this transaction that are not equal 1000 DNET.</source>
-        <translation>Impossibile trovare un numero sufficiente di non denominati fondi Obfuscate per questa operazione che non sono uguali a 1000 DNET.</translation>
+        <source>Unable to locate enough Obfuscate non-denominated funds for this transaction that are not equal 1000 pivx.</source>
+        <translation>Impossibile trovare un numero sufficiente di non denominati fondi Obfuscate per questa operazione che non sono uguali a 1000 pivx.</translation>
     </message>
     <message>
         <source>Warning: -paytxfee is set very high! This is the transaction fee you will pay if you send a transaction.</source>
@@ -3440,12 +3440,12 @@ Più URL vengono separati da una barra verticale |.</translation>
         <translation>Abilita utilizzo di obfuscate automatizzato per i fondi conservati in questo portafoglio (0-1, predefinito: %u)</translation>
     </message>
     <message>
-        <source>Fees (in DNET/Kb) smaller than this are considered zero fee for relaying (default: %s)</source>
-        <translation>Le commissioni (in DNET/Kb) inferiori a questo valore saranno considerate nulle per la trasmissione (prefedinito:%s)</translation>
+        <source>Fees (in pivx/Kb) smaller than this are considered zero fee for relaying (default: %s)</source>
+        <translation>Le commissioni (in pivx/Kb) inferiori a questo valore saranno considerate nulle per la trasmissione (prefedinito:%s)</translation>
     </message>
     <message>
-        <source>Fees (in DNET/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</source>
-        <translation>Le commissioni (in DNET/Kb)  inferiori a questo valore saranno considerate nulle per la creazione della transazione (prefedinito:%s)</translation>
+        <source>Fees (in pivx/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</source>
+        <translation>Le commissioni (in pivx/Kb)  inferiori a questo valore saranno considerate nulle per la creazione della transazione (prefedinito:%s)</translation>
     </message>
     <message>
         <source>Found unconfirmed denominated outputs, will wait till they confirm to continue.</source>

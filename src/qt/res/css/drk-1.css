@@ -56,7 +56,7 @@ color:#fff;
 }
 
 /*******************************/
-/* TEXT:  TOTAL AVAILABLE DNET */
+/* TEXT:  TOTAL AVAILABLE PIVX */
 /*******************************/
 
 QToolBar > QToolButton:checked {
@@ -1179,7 +1179,7 @@ border:0;
 }
 
 /*******************************/
-/* ABOUT DARKNET DIALOG        */
+/* ABOUT PIVX DIALOG        */
 /*******************************/
 
 QDialog#AboutDialog {
@@ -1187,7 +1187,7 @@ background-color:#F8F6F6;
 }
 
 /*******************************/
-/* ABOUT DARKNET CONTENTS      */
+/* ABOUT PIVX CONTENTS      */
 /*******************************/
 
 QDialog#AboutDialog QLabel#label, QDialog#AboutDialog QLabel#copyrightLabel, QDialog#AboutDialog QLabel#label_2 {
@@ -1196,7 +1196,7 @@ margin-left:10px;
 
 /*******************************/
 /* MARGINE FOR -               */
-/* ABOUT DARKNET TEXT          */
+/* ABOUT PIVX TEXT          */
 /*******************************/
 
 QDialog#AboutDialog QLabel#label_2 {
@@ -1765,7 +1765,7 @@ color:#ffffff;
 }
 
 /*******************************/
-/* TEXT - 0.00010000 DNET/KB   */
+/* TEXT - 0.00010000 PIVX/KB   */
 /*******************************/
 
 QDialog#SendCoinsDialog QLabel#labelFeeMinimized {
@@ -2050,7 +2050,7 @@ color:#ffffff;
 }
 
 /*******************************/
-/* TEXT - DNET/KB              */
+/* TEXT - PIVX/KB              */
 /*******************************/
 
 QDialog#SendCoinsDialog QLabel#labelFeeEstimation {

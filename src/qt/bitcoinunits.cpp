@@ -44,9 +44,9 @@ QString BitcoinUnits::id(int unit)
 {
     switch(unit)
     {
-        case PIVX: return QString("darknet");
-        case mPIVX: return QString("mdarknet");
-        case uPIVX: return QString::fromUtf8("udarknet");
+        case PIVX: return QString("pivx");
+        case mPIVX: return QString("mpivx");
+        case uPIVX: return QString::fromUtf8("upivx");
         default: return QString("???");
     }
 }

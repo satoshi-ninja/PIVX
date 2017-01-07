@@ -1,15 +1,15 @@
 [Unit]
-Description=Darknet's distributed currency daemon
+Description=PIVX's distributed currency daemon
 After=network.target
 
 [Service]
-User=darknet
-Group=darknet
+User=pivx
+Group=pivx
 
 Type=forking
-PIDFile=/var/lib/darknetd/darknetd.pid
-ExecStart=/usr/bin/darknetd -daemon -pid=/var/lib/darknetd/darknetd.pid \
--conf=/etc/darknet/darknet.conf -datadir=/var/lib/darknetd -disablewallet
+PIDFile=/var/lib/pivxd/pivxd.pid
+ExecStart=/usr/bin/pivxd -daemon -pid=/var/lib/pivxd/pivxd.pid \
+-conf=/etc/pivx/pivx.conf -datadir=/var/lib/pivxd -disablewallet
 
 Restart=always
 PrivateTmp=true

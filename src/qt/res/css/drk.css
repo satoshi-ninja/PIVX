@@ -57,7 +57,7 @@ color:#fff;
 
 QToolBar > QToolButton:checked {
 background-color:#fff;
-color:#999999; /* TEXT TOTAL AVAILABLE DNET  */
+color:#999999; /* TEXT TOTAL AVAILABLE PIVX  */
 font-weight:bold;
 }
 
@@ -701,16 +701,16 @@ QDialog#HelpMessageDialog QScrollBar:vertical, QDialog#HelpMessageDialog QScroll
 border:0;
 }
 
-/* About Darknet Dialog */
+/* About PIVX Dialog */
 QDialog#AboutDialog {
 background-color:#F8F6F6;
 }
 
-QDialog#AboutDialog QLabel#label, QDialog#AboutDialog QLabel#copyrightLabel, QDialog#AboutDialog QLabel#label_2 { /* About Darknet Contents */
+QDialog#AboutDialog QLabel#label, QDialog#AboutDialog QLabel#copyrightLabel, QDialog#AboutDialog QLabel#label_2 { /* About PIVX Contents */
 margin-left:10px;
 }
 
-QDialog#AboutDialog QLabel#label_2 { /* Margin for About Darknet text */
+QDialog#AboutDialog QLabel#label_2 { /* Margin for About PIVX text */
 margin-right:10px;
 }
 
@@ -1115,7 +1115,7 @@ color:#ffffff; /*  TEXT "TRANSACTION FEE"   */
 }
 
 QDialog#SendCoinsDialog QLabel#labelFeeMinimized {
-color:#ffffff; /*  TEXT "0.00010000 DNET/kB"   */
+color:#ffffff; /*  TEXT "0.00010000 PIVX/kB"   */
 }
 
 QDialog#SendCoinsDialog .QFrame#frameCoinControl { /* Coin Control Section */
@@ -1302,7 +1302,7 @@ color:#ffffff; /*  "00010000" TEXT   */
 }
 
 QDialog#SendCoinsDialog QLabel#labelFeeEstimation {
-color:#ffffff; /*  "DNET/kB" TEXT   */
+color:#ffffff; /*  "PIVX/kB" TEXT   */
 }
 
 QDialog#SendCoinsDialog QLabel#labelSmartFee2 {

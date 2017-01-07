@@ -6,7 +6,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/darknet-config.h"
+#include "config/pivx-config.h"
 #endif
 
 #include "optionsmodel.h"
@@ -149,7 +149,7 @@ void OptionsModel::Init()
     if (settings.contains("nObfuscationRounds"))
         SoftSetArg("-obfuscationrounds", settings.value("nObfuscationRounds").toString().toStdString());
     if (settings.contains("nAnonymizePIVXAmount"))
-        SoftSetArg("-anonymizedarknetamount", settings.value("nAnonymizePIVXAmount").toString().toStdString());
+        SoftSetArg("-anonymizepivxamount", settings.value("nAnonymizePIVXAmount").toString().toStdString());
 
     language = settings.value("language").toString();
 }
@@ -160,7 +160,7 @@ void OptionsModel::Reset()
 
     // Remove all entries from our QSettings object
     settings.clear();
-    resetSettings = true; // Needed in darknet.cpp during shotdown to also remove the window positions
+    resetSettings = true; // Needed in pivx.cpp during shotdown to also remove the window positions
 
     // default setting for OptionsModel::StartAtStartup - disabled
     if (GUIUtil::GetStartOnSystemStartup())
@@ -348,7 +348,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
         case AnonymizePIVXAmount:
             nAnonymizePIVXAmount = value.toInt();
             settings.setValue("nAnonymizePIVXAmount", nAnonymizePIVXAmount);
-            emit anonymizeDarknetAmountChanged(nAnonymizePIVXAmount);
+            emit anonymizePIVXAmountChanged(nAnonymizePIVXAmount);
             break;
         case CoinControlFeatures:
             fCoinControlFeatures = value.toBool();

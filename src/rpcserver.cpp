@@ -311,16 +311,16 @@ static const CRPCCommand vRPCCommands[] =
     { "hidden",             "reconsiderblock",        &reconsiderblock,        true,      true,       false },
     { "hidden",             "setmocktime",            &setmocktime,            true,      false,      false },
 
-    /* Darknet features */
-    { "darknet",               "masternode",             &masternode,             true,      true,       false },
-    { "darknet",               "masternodelist",         &masternodelist,         true,      true,       false },
-    { "darknet",               "mnbudget",               &mnbudget,               true,      true,       false },
-    { "darknet",               "mnbudgetvoteraw",        &mnbudgetvoteraw,        true,      true,       false },
-    { "darknet",               "mnfinalbudget",          &mnfinalbudget,          true,      true,       false },
-    { "darknet",               "mnsync",                 &mnsync,                 true,      true,       false },
-    { "darknet",               "spork",                  &spork,                  true,      true,       false },
+    /* PIVX features */
+    { "pivx",               "masternode",             &masternode,             true,      true,       false },
+    { "pivx",               "masternodelist",         &masternodelist,         true,      true,       false },
+    { "pivx",               "mnbudget",               &mnbudget,               true,      true,       false },
+    { "pivx",               "mnbudgetvoteraw",        &mnbudgetvoteraw,        true,      true,       false },
+    { "pivx",               "mnfinalbudget",          &mnfinalbudget,          true,      true,       false },
+    { "pivx",               "mnsync",                 &mnsync,                 true,      true,       false },
+    { "pivx",               "spork",                  &spork,                  true,      true,       false },
 #ifdef ENABLE_WALLET
-    { "darknet",               "obfuscation",               &obfuscation,               false,     false,      true  }, /* not threadSafe because of SendMoney */
+    { "pivx",               "obfuscation",               &obfuscation,               false,     false,      true  }, /* not threadSafe because of SendMoney */
 
     /* Wallet */
     { "wallet",             "addmultisigaddress",     &addmultisigaddress,     true,      false,      true },
@@ -594,10 +594,10 @@ void StartRPCThreads()
         unsigned char rand_pwd[32];
         GetRandBytes(rand_pwd, 32);
         uiInterface.ThreadSafeMessageBox(strprintf(
-            _("To use darknetd, or the -server option to darknet-qt, you must set an rpcpassword in the configuration file:\n"
+            _("To use pivxd, or the -server option to pivx-qt, you must set an rpcpassword in the configuration file:\n"
               "%s\n"
               "It is recommended you use the following random password:\n"
-              "rpcuser=darknetrpc\n"
+              "rpcuser=pivxrpc\n"
               "rpcpassword=%s\n"
               "(you do not need to remember this password)\n"
               "The username and password MUST NOT be the same.\n"
@@ -1054,7 +1054,7 @@ json_spirit::Value CRPCTable::execute(const std::string &strMethod, const json_s
 }
 
 std::string HelpExampleCli(string methodname, string args){
-    return "> darknet-cli " + methodname + " " + args + "\n";
+    return "> pivx-cli " + methodname + " " + args + "\n";
 }
 
 std::string HelpExampleRpc(string methodname, string args){

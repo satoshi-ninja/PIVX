@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 
-[darknet.qt-translation-010x]
-file_filter = src/qt/locale/darknet_<lang>.ts
-source_file = src/qt/locale/darknet_en.ts
+[pivx.qt-translation-010x]
+file_filter = src/qt/locale/pivx_<lang>.ts
+source_file = src/qt/locale/pivx_en.ts
 source_lang = en

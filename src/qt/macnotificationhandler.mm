@@ -15,7 +15,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"io.darknet.Darknet-Qt";
+        return @"io.pivx.PIVX-Qt";
     } else {
         return [self __bundleIdentifier];
     }

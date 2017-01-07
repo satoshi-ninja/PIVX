@@ -176,8 +176,8 @@
         <translation>Подтвердите шифрование кошелька</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DNET&lt;/b&gt;!</source>
-        <translation>Внимание: если Вы зашифруете кошелёк и потеряете пароль, вы &lt;b&gt;ПОТЕРЯЕТЕ ВСЕ ВАШИ DNET&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR pivx&lt;/b&gt;!</source>
+        <translation>Внимание: если Вы зашифруете кошелёк и потеряете пароль, вы &lt;b&gt;ПОТЕРЯЕТЕ ВСЕ ВАШИ pivx&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -864,28 +864,28 @@ Address: %4
         <translation>Пожалуйста, выберите уровень приватности.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 1000 DNET</source>
-        <translation>Использовать 2 отдельные мастерноды для перемешивания до 1000 DNET</translation>
+        <source>Use 2 separate masternodes to mix funds up to 1000 pivx</source>
+        <translation>Использовать 2 отдельные мастерноды для перемешивания до 1000 pivx</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 1000 DNET</source>
-        <translation>Использовать 8 отдельных мастернод для перемешивания до 1000 DNET</translation>
+        <source>Use 8 separate masternodes to mix funds up to 1000 pivx</source>
+        <translation>Использовать 8 отдельных мастернод для перемешивания до 1000 pivx</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
         <translation>Использовать 16 отдельных мастернод</translation>
     </message>
     <message>
-        <source>This option is the quickest and will cost about ~0.025 DNET to anonymize 1000 DNET</source>
-        <translation>Это самый быстрый вариант, анонимизация 1000 DNET будет стоить вам примерно 0.025 DNET</translation>
+        <source>This option is the quickest and will cost about ~0.025 pivx to anonymize 1000 pivx</source>
+        <translation>Это самый быстрый вариант, анонимизация 1000 pivx будет стоить вам примерно 0.025 pivx</translation>
     </message>
     <message>
-        <source>This option is moderately fast and will cost about 0.05 DNET to anonymize 1000 DNET</source>
-        <translation>Это относительно быстрый вариант, анонимизация 1000 DNET будет стоить вам примерно 0.05 DNET</translation>
+        <source>This option is moderately fast and will cost about 0.05 pivx to anonymize 1000 pivx</source>
+        <translation>Это относительно быстрый вариант, анонимизация 1000 pivx будет стоить вам примерно 0.05 pivx</translation>
     </message>
     <message>
-        <source>0.1 DNET per 1000 DNET you anonymize.</source>
-        <translation>0.1 DNET за каждые анонимизированные 1000 DNET.</translation>
+        <source>0.1 pivx per 1000 pivx you anonymize.</source>
+        <translation>0.1 pivx за каждые анонимизированные 1000 pivx.</translation>
     </message>
     <message>
         <source>This is the slowest and most secure option. Using maximum anonymity will cost</source>
@@ -1431,8 +1431,8 @@ https://www.transifex.com/pivx-crypto/pivx-wallet-translations/</translation>
         <translation>Сумма и раунды:</translation>
     </message>
     <message>
-        <source>0 DNET / 0 Rounds</source>
-        <translation>0 DNET / 0 раундов</translation>
+        <source>0 pivx / 0 Rounds</source>
+        <translation>0 pivx / 0 раундов</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -3276,8 +3276,8 @@ https://www.transifex.com/pivx-crypto/pivx-wallet-translations/</translation>
         <translation>Отправка</translation>
     </message>
     <message>
-        <source>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 DNET.</source>
-        <translation>SwiftTX пока что не поддерживает такие большие суммы. На данный момент транзакции ограничены суммами до %1 DNET.</translation>
+        <source>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 pivx.</source>
+        <translation>SwiftTX пока что не поддерживает такие большие суммы. На данный момент транзакции ограничены суммами до %1 pivx.</translation>
     </message>
 </context>
 <context>
@@ -3390,8 +3390,8 @@ https://www.transifex.com/pivx-crypto/pivx-wallet-translations/</translation>
         <translation>Не удалось обнаружить достаточных для выполнения этой транзакции номиналов Obfuscate.</translation>
     </message>
     <message>
-        <source>Unable to locate enough Obfuscate non-denominated funds for this transaction that are not equal 1000 DNET.</source>
-        <translation>Не удалось обнаружить достаточных для выполнения этой транзакции неденоминированных средств, отличающихся от 1000DNET.</translation>
+        <source>Unable to locate enough Obfuscate non-denominated funds for this transaction that are not equal 1000 pivx.</source>
+        <translation>Не удалось обнаружить достаточных для выполнения этой транзакции неденоминированных средств, отличающихся от 1000pivx.</translation>
     </message>
     <message>
         <source>Warning: -paytxfee is set very high! This is the transaction fee you will pay if you send a transaction.</source>
@@ -3634,12 +3634,12 @@ https://www.transifex.com/pivx-crypto/pivx-wallet-translations/</translation>
         <translation>Ошибка: Обнаружен неподдерживаемый аргумент -socks. Выбор версии SOCKS больше невозможен, поддерживаются только прокси версии SOCKS5.</translation>
     </message>
     <message>
-        <source>Fees (in DNET/Kb) smaller than this are considered zero fee for relaying (default: %s)</source>
-        <translation>Комиссии (в DNET/Kb) меньше этого значения считаются нулевой для ретранслирования транзакции (по умолчанию: %s)</translation>
+        <source>Fees (in pivx/Kb) smaller than this are considered zero fee for relaying (default: %s)</source>
+        <translation>Комиссии (в pivx/Kb) меньше этого значения считаются нулевой для ретранслирования транзакции (по умолчанию: %s)</translation>
     </message>
     <message>
-        <source>Fees (in DNET/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</source>
-        <translation>Комиссии (в DNET/Kb) меньше этого значения считаются нулевой (для создания транзакции) (по умолчанию: %s)</translation>
+        <source>Fees (in pivx/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</source>
+        <translation>Комиссии (в pivx/Kb) меньше этого значения считаются нулевой (для создания транзакции) (по умолчанию: %s)</translation>
     </message>
     <message>
         <source>Flush database activity from memory pool to disk log every &lt;n&gt; megabytes (default: %u)</source>
@@ -3734,8 +3734,8 @@ rpcpassword=%s
 </translation>
     </message>
     <message>
-        <source>Unable to locate enough funds for this transaction that are not equal 1000 DNET.</source>
-        <translation>Не удалось обнаружить достаточных для выполнения этой транзакции средств, отличающихся от 1000DNET.</translation>
+        <source>Unable to locate enough funds for this transaction that are not equal 1000 pivx.</source>
+        <translation>Не удалось обнаружить достаточных для выполнения этой транзакции средств, отличающихся от 1000pivx.</translation>
     </message>
     <message>
         <source>Use separate SOCKS5 proxy to reach peers via Tor hidden services (default: %s)</source>
@@ -3848,8 +3848,8 @@ rpcpassword=%s
         <translation>Ошибка: Обнаружен неподдерживаемый параметр -tor, используйте -onion вместо него.</translation>
     </message>
     <message>
-        <source>Fee (in DNET/kB) to add to transactions you send (default: %s)</source>
-        <translation>Комиссии (в DNET/kB), добавляемая к отправляемым Вами транзакциям (по умолчанию: %s)</translation>
+        <source>Fee (in pivx/kB) to add to transactions you send (default: %s)</source>
+        <translation>Комиссии (в pivx/kB), добавляемая к отправляемым Вами транзакциям (по умолчанию: %s)</translation>
     </message>
     <message>
         <source>Finalizing transaction.</source>
@@ -4216,8 +4216,8 @@ rpcpassword=%s
         <translation>Ключ KeePassHttp для зашифрованной коммуникации с KeePass</translation>
     </message>
     <message>
-        <source>Keep N DNET anonymized (default: %u)</source>
-        <translation>Держать N DNET анонимизированными (по умолчанию: %u)</translation>
+        <source>Keep N pivx anonymized (default: %u)</source>
+        <translation>Держать N pivx анонимизированными (по умолчанию: %u)</translation>
     </message>
     <message>
         <source>Keep at most &lt;n&gt; unconnectable transactions in memory (default: %u)</source>

@@ -14,9 +14,9 @@ AC_CONFIG_MACRO_DIR([build-aux/m4])
 
 AC_CANONICAL_HOST
 
-AH_TOP([#ifndef DNET_CONFIG_H])
-AH_TOP([#define DNET_CONFIG_H])
-AH_BOTTOM([#endif //DNET_CONFIG_H])
+AH_TOP([#ifndef PIVX_CONFIG_H])
+AH_TOP([#define PIVX_CONFIG_H])
+AH_BOTTOM([#endif //PIVX_CONFIG_H])
 
 dnl faketime breaks configure and is only needed for make. Disable it here.
 unset FAKETIME
@@ -366,7 +366,7 @@ AC_C_BIGENDIAN([AC_MSG_ERROR("Big Endian not supported")])
 dnl Check for pthread compile/link requirements
 AX_PTHREAD
 
-# The following macro will add the necessary defines to darknet-config.h, but
+# The following macro will add the necessary defines to pivx-config.h, but
 # they also need to be passed down to any subprojects. Pull the results out of
 # the cache and add them to CPPFLAGS.
 AC_SYS_LARGEFILE
