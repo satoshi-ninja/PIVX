@@ -59,7 +59,7 @@ SendCoinsDialog::SendCoinsDialog(QWidget *parent) :
     connect(ui->splitBlockCheckBox, SIGNAL(stateChanged(int)), this, SLOT(splitBlockChecked(int)));
     connect(ui->splitBlockLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(splitBlockLineEditChanged(const QString &)));
 
-    // DarkNet specific
+    // PIVX specific
     QSettings settings;
     if (!settings.contains("bUseObfuScation"))
         settings.setValue("bUseObfuScation", false);
@@ -921,7 +921,7 @@ void SendCoinsDialog::coinControlChangeEdited(const QString& text)
         }
         else if (!addr.IsValid()) // Invalid address
         {
-            ui->labelCoinControlChangeLabel->setText(tr("Warning: Invalid DarkNet address"));
+            ui->labelCoinControlChangeLabel->setText(tr("Warning: Invalid PIVX address"));
         }
         else // Valid address
         {

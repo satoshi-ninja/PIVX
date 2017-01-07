@@ -30,7 +30,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/thread/exceptions.hpp>
 
-//DarkNet only features
+//PIVX only features
 
 extern bool fMasterNode;
 extern bool fLiteMode;

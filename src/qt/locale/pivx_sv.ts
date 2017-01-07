@@ -58,12 +58,12 @@
         <translation>Mottagaradresser</translation>
     </message>
     <message>
-        <source>These are your DarkNet addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>De här är dina DarkNet-adresser för att skicka betalningar. Kontrollera alltid mängden och mottagaradressen innan du skickar mynt.</translation>
+        <source>These are your PIVX addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>De här är dina PIVX-adresser för att skicka betalningar. Kontrollera alltid mängden och mottagaradressen innan du skickar mynt.</translation>
     </message>
     <message>
-        <source>These are your DarkNet addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>De här är dina DarkNet-adresser för betalningsmottagningar. Det rekommenderas att använda en ny mottagaradress för varje transaktion.</translation>
+        <source>These are your PIVX addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>De här är dina PIVX-adresser för betalningsmottagningar. Det rekommenderas att använda en ny mottagaradress för varje transaktion.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -176,8 +176,8 @@
         <translation>Plånbok krypterad</translation>
     </message>
     <message>
-        <source>DarkNet will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your darknets from being stolen by malware infecting your computer.</source>
-        <translation>DarkNet kommer nu att färdigställa krypteringsprocessen. Kom ihåg att krypteringen av din plånbok inte kan skydda dig helt och hållet från att dina DarkNet stjäls av skadeprogram som har infekterat din dator.</translation>
+        <source>PIVX will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your pivxs from being stolen by malware infecting your computer.</source>
+        <translation>PIVX kommer nu att färdigställa krypteringsprocessen. Kom ihåg att krypteringen av din plånbok inte kan skydda dig helt och hållet från att dina PIVX stjäls av skadeprogram som har infekterat din dator.</translation>
     </message>
     <message>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
@@ -219,8 +219,8 @@
 <context>
     <name>BitcoinGUI</name>
     <message>
-        <source>DarkNet Core</source>
-        <translation>DarkNet Core
+        <source>PIVX Core</source>
+        <translation>PIVX Core
 </translation>
     </message>
     <message>
@@ -244,16 +244,16 @@
         <translation>&amp;Skicka</translation>
     </message>
     <message>
-        <source>Send coins to a DarkNet address</source>
-        <translation>Skicka mynt till en DarkNet-adress</translation>
+        <source>Send coins to a PIVX address</source>
+        <translation>Skicka mynt till en PIVX-adress</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Motta</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and darknet: URIs)</source>
-        <translation>Begär betalningar (genererar QR-koder och DarkNet:-URI:s)</translation>
+        <source>Request payments (generates QR codes and pivx: URIs)</source>
+        <translation>Begär betalningar (genererar QR-koder och PIVX:-URI:s)</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -272,8 +272,8 @@
         <translation>Avsluta applikationen</translation>
     </message>
     <message>
-        <source>&amp;About DarkNet Core</source>
-        <translation>&amp;Om DarkNet Core</translation>
+        <source>&amp;About PIVX Core</source>
+        <translation>&amp;Om PIVX Core</translation>
     </message>
     <message>
         <source>About &amp;Qt</source>
@@ -288,8 +288,8 @@
         <translation>&amp;Alternativ...</translation>
     </message>
     <message>
-        <source>Modify configuration options for DarkNet</source>
-        <translation>Anpassa konfigurationsalternatv för DarkNet</translation>
+        <source>Modify configuration options for PIVX</source>
+        <translation>Anpassa konfigurationsalternatv för PIVX</translation>
     </message>
     <message>
         <source>&amp;Show / Hide</source>
@@ -340,16 +340,16 @@
         <translation>Signera &amp;meddelande...</translation>
     </message>
     <message>
-        <source>Sign messages with your DarkNet addresses to prove you own them</source>
-        <translation>Signera meddelanden med dina DarkNet-adresser för att bevisa att du äger dem</translation>
+        <source>Sign messages with your PIVX addresses to prove you own them</source>
+        <translation>Signera meddelanden med dina PIVX-adresser för att bevisa att du äger dem</translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>
         <translation>&amp;Bekräfta meddelande...</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified DarkNet addresses</source>
-        <translation>Bekräfta meddelanden för att garantera att de signerades med de angivna DarkNet-adresserna</translation>
+        <source>Verify messages to ensure they were signed with specified PIVX addresses</source>
+        <translation>Bekräfta meddelanden för att garantera att de signerades med de angivna PIVX-adresserna</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -404,16 +404,16 @@
         <translation>Öppna &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a darknet: URI or payment request</source>
-        <translation>Öppna en DarkNet-URI eller betalningsbegäran</translation>
+        <source>Open a pivx: URI or payment request</source>
+        <translation>Öppna en PIVX-URI eller betalningsbegäran</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;Kommandoradalternativ</translation>
     </message>
     <message>
-        <source>Show the DarkNet Core help message to get a list with possible DarkNet command-line options</source>
-        <translation>Visa DarkNet Core-hjälpmeddelandet för att få en lista med möjliga DarkNet-kommandoradalternativ</translation>
+        <source>Show the PIVX Core help message to get a list with possible PIVX command-line options</source>
+        <translation>Visa PIVX Core-hjälpmeddelandet för att få en lista med möjliga PIVX-kommandoradalternativ</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -790,16 +790,16 @@ Adress: %4
         <translation>Obfuscate-konfiguration</translation>
     </message>
     <message>
-        <source>Obfuscate was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening DarkNet's configuration screen.</source>
-        <translation>Obfuscate ställdes framgångsrikt om till grundläggande (%1 och 2 omgångar). Du kan ändra detta när som helst genom att öppna DarkNet:s konfigurationsskärm.</translation>
+        <source>Obfuscate was successfully set to basic (%1 and 2 rounds). You can change this at any time by opening PIVX's configuration screen.</source>
+        <translation>Obfuscate ställdes framgångsrikt om till grundläggande (%1 och 2 omgångar). Du kan ändra detta när som helst genom att öppna PIVX:s konfigurationsskärm.</translation>
     </message>
     <message>
-        <source>Obfuscate was successfully set to high (%1 and 8 rounds). You can change this at any time by opening DarkNet's configuration screen.</source>
-        <translation>Obfuscate ställdes framgångsrikt in på hög (%1 och 8 omgångar). Du kan ändra detta när som helst genom att öppna DarkNet:s konfigurationsskärm.</translation>
+        <source>Obfuscate was successfully set to high (%1 and 8 rounds). You can change this at any time by opening PIVX's configuration screen.</source>
+        <translation>Obfuscate ställdes framgångsrikt in på hög (%1 och 8 omgångar). Du kan ändra detta när som helst genom att öppna PIVX:s konfigurationsskärm.</translation>
     </message>
     <message>
-        <source>Obfuscate was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening DarkNet's configuration screen.</source>
-        <translation>Obfuscate ställdes framgångsrikt in på maximal (%1 och 16 omgångar). Du kan ändra detta när som helst genom att öppna DarkNet:s konfigurationsskärm</translation>
+        <source>Obfuscate was successfully set to maximum (%1 and 16 rounds). You can change this at any time by opening PIVX's configuration screen.</source>
+        <translation>Obfuscate ställdes framgångsrikt in på maximal (%1 och 16 omgångar). Du kan ändra detta när som helst genom att öppna PIVX:s konfigurationsskärm</translation>
     </message>
 </context>
 <context>
@@ -841,8 +841,8 @@ Adress: %4
         <translation>Redigera avsändaradress</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid DarkNet address.</source>
-        <translation>Den angivna adressen "%1" är inte en giltig DarkNet-adress.</translation>
+        <source>The entered address "%1" is not a valid PIVX address.</source>
+        <translation>Den angivna adressen "%1" är inte en giltig PIVX-adress.</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -883,8 +883,8 @@ Adress: %4
 <context>
     <name>HelpMessageDialog</name>
     <message>
-        <source>DarkNet Core</source>
-        <translation>DarkNet Core
+        <source>PIVX Core</source>
+        <translation>PIVX Core
 </translation>
     </message>
     <message>
@@ -931,16 +931,16 @@ Adress: %4
         <translation>Välkommen</translation>
     </message>
     <message>
-        <source>Welcome to DarkNet Core.</source>
-        <translation>Välkommen till DarkNet Core.</translation>
+        <source>Welcome to PIVX Core.</source>
+        <translation>Välkommen till PIVX Core.</translation>
     </message>
     <message>
-        <source>As this is the first time the program is launched, you can choose where DarkNet Core will store its data.</source>
-        <translation>Då detta är första gången programmet startas kan du välja var DarkNet Core ska lagra sin data.</translation>
+        <source>As this is the first time the program is launched, you can choose where PIVX Core will store its data.</source>
+        <translation>Då detta är första gången programmet startas kan du välja var PIVX Core ska lagra sin data.</translation>
     </message>
     <message>
-        <source>DarkNet Core will download and store a copy of the DarkNet block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>DarkNet Core kommer att laddas ned och lagra en kopia av DarkNet:s blockkedja. Minst %1 GB data kommer att lagras i denna katalog och den kommer att växa med tiden. Plånboken kommer också att lagras i denna katalog.</translation>
+        <source>PIVX Core will download and store a copy of the PIVX block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>PIVX Core kommer att laddas ned och lagra en kopia av PIVX:s blockkedja. Minst %1 GB data kommer att lagras i denna katalog och den kommer att växa med tiden. Plånboken kommer också att lagras i denna katalog.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -989,12 +989,12 @@ Adress: %4
         <translation>&amp;Huvud</translation>
     </message>
     <message>
-        <source>Automatically start DarkNet after logging in to the system.</source>
-        <translation>Starta DarkNet automatiskt efter systeminloggning.</translation>
+        <source>Automatically start PIVX after logging in to the system.</source>
+        <translation>Starta PIVX automatiskt efter systeminloggning.</translation>
     </message>
     <message>
-        <source>&amp;Start DarkNet on system login</source>
-        <translation>&amp;Starta DarkNet vid systeminloggning</translation>
+        <source>&amp;Start PIVX on system login</source>
+        <translation>&amp;Starta PIVX vid systeminloggning</translation>
     </message>
     <message>
         <source>Size of &amp;database cache</source>
@@ -1021,8 +1021,8 @@ Adress: %4
         <translation>Denna mängd fungerar som en tröskel att stänga av Obfuscate då det har uppnåtts.</translation>
     </message>
     <message>
-        <source>Amount of DarkNet to keep anonymized</source>
-        <translation>Mängd DarkNet att bibehålla anonymiserade</translation>
+        <source>Amount of PIVX to keep anonymized</source>
+        <translation>Mängd PIVX att bibehålla anonymiserade</translation>
     </message>
     <message>
         <source>W&amp;allet</source>
@@ -1049,8 +1049,8 @@ Adress: %4
         <translation>&amp;Nätverk</translation>
     </message>
     <message>
-        <source>Automatically open the DarkNet client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Öppna DarkNet:s klientport automatiskt på routern. Detta fungerar bara om din router stöder UPnP och är aktiverad.</translation>
+        <source>Automatically open the PIVX client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Öppna PIVX:s klientport automatiskt på routern. Detta fungerar bara om din router stöder UPnP och är aktiverad.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -1101,14 +1101,14 @@ Adress: %4
         <translation>Användargränssnitt&amp;språk: </translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting DarkNet.</source>
-        <translation>Användargränssnittspråket kan ställas in här. Denna inställning träder i kraft efter att DarkNet startats om.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting PIVX.</source>
+        <translation>Användargränssnittspråket kan ställas in här. Denna inställning träder i kraft efter att PIVX startats om.</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</source>
+https://www.transifex.com/pivx-crypto/pivx-wallet-translations/</source>
         <translation>Fattas språk eller är det en ofullständig översättning? Hjälp till att bidra med översättningar här:
-https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translation>
+https://www.transifex.com/pivx-crypto/pivx-wallet-translations/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1182,8 +1182,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
         <translation>Formulär</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the DarkNet network after a connection is established, but this process has not completed yet.</source>
-        <translation>Den visade informationen kan vara utdaterad. Din plånbok synkroniseras automatiskt med DarkNet-nätverket efter att en anslutning har etablerats men denna process har ännu inte slutförts.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PIVX network after a connection is established, but this process has not completed yet.</source>
+        <translation>Den visade informationen kan vara utdaterad. Din plånbok synkroniseras automatiskt med PIVX-nätverket efter att en anslutning har etablerats men denna process har ännu inte slutförts.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1335,8 +1335,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
         <translation>Fel vid betalningsbegäran</translation>
     </message>
     <message>
-        <source>Cannot start darknet: click-to-pay handler</source>
-        <translation>Kan inte starta darknet: klicka-för-att-betala hanterare</translation>
+        <source>Cannot start pivx: click-to-pay handler</source>
+        <translation>Kan inte starta pivx: klicka-för-att-betala hanterare</translation>
     </message>
     <message>
         <source>URI handling</source>
@@ -1435,8 +1435,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
         <translation>Antal anslutningar</translation>
     </message>
     <message>
-        <source>Open the DarkNet debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation>Öppna DarkNets avsökningsloggfil från den nuvarande datakatalogen. Detta kan ta ett par sekunder för stora loggfiler.</translation>
+        <source>Open the PIVX debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <translation>Öppna PIVXs avsökningsloggfil från den nuvarande datakatalogen. Detta kan ta ett par sekunder för stora loggfiler.</translation>
     </message>
     <message>
         <source>&amp;Open</source>
@@ -1507,8 +1507,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
         <translation>Ut:</translation>
     </message>
     <message>
-        <source>Welcome to the DarkNet RPC console.</source>
-        <translation>Välkommen till DarkNets RPC-konsol.</translation>
+        <source>Welcome to the PIVX RPC console.</source>
+        <translation>Välkommen till PIVXs RPC-konsol.</translation>
     </message>
     <message>
         <source>Use up and down arrows to navigate history, and &lt;b&gt;Ctrl-L&lt;/b&gt; to clear screen.</source>
@@ -1542,8 +1542,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
         <translation>Åt&amp;eranvänd en befintlig mottagaradress (rekommenderas inte)</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the DarkNet network.</source>
-        <translation>Ett valfritt meddelande att bifoga betalningsbegärandet vilket kommer att visas när begärandet öppnas. Observera: Meddelandet kommer inte att skickas med betalningen över DarkNet-nätverket.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PIVX network.</source>
+        <translation>Ett valfritt meddelande att bifoga betalningsbegärandet vilket kommer att visas när begärandet öppnas. Observera: Meddelandet kommer inte att skickas med betalningen över PIVX-nätverket.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -1899,8 +1899,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
         <translation>Fel: Plånboken låstes upp enbart för att anonymisera mynt.</translation>
     </message>
     <message>
-        <source>Warning: Invalid DarkNet address</source>
-        <translation>Varning: Ogiltig DarkNet-adress</translation>
+        <source>Warning: Invalid PIVX address</source>
+        <translation>Varning: Ogiltig PIVX-adress</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -1958,8 +1958,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
         <translation>Meddelande:</translation>
     </message>
     <message>
-        <source>A message that was attached to the darknet: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the DarkNet network.</source>
-        <translation>Ett meddelande som bifogades till DarkNet: URI vilket kommer att lagras med transaktionen så att du vet. Observera: Meddelandet kommer inte att skickas över DarkNet-nätverket.</translation>
+        <source>A message that was attached to the pivx: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PIVX network.</source>
+        <translation>Ett meddelande som bifogades till PIVX: URI vilket kommer att lagras med transaktionen så att du vet. Observera: Meddelandet kommer inte att skickas över PIVX-nätverket.</translation>
     </message>
     <message>
         <source>This is an unverified payment request.</source>
@@ -1985,8 +1985,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>DarkNet Core is shutting down...</source>
-        <translation>DarkNet Core stängs ned...</translation>
+        <source>PIVX Core is shutting down...</source>
+        <translation>PIVX Core stängs ned...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -2036,8 +2036,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
         <translation>Kopiera den nuvarande valda signaturen till systemurklippet</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this DarkNet address</source>
-        <translation>Signera meddelandet för att bevisa att du äger denna DarkNet-adress</translation>
+        <source>Sign the message to prove you own this PIVX address</source>
+        <translation>Signera meddelandet för att bevisa att du äger denna PIVX-adress</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -2060,8 +2060,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
         <translation>Skriv in signeringsadressen, meddelandet, (försäkra dig om att du kopierar linjeavbrott, mellanslag, flikar med mera) och signera nedtill för att verifiera meddelandet. Var försiktig med att inte läsa in mer i signaturen än vad som finns i det signerade meddelandet för att undvika att bli lurad av en mellanhandattack.</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified DarkNet address</source>
-        <translation>Bekräfta meddelandet för att försäkra dig om att den signerades med den angivna DarkNet-adressen</translation>
+        <source>Verify the message to ensure it was signed with the specified PIVX address</source>
+        <translation>Bekräfta meddelandet för att försäkra dig om att den signerades med den angivna PIVX-adressen</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -2127,8 +2127,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>DarkNet Core</source>
-        <translation>DarkNet Core
+        <source>PIVX Core</source>
+        <translation>PIVX Core
 </translation>
     </message>
     <message>
@@ -2140,8 +2140,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
         <translation>Bitcoin Core-utvecklarna</translation>
     </message>
     <message>
-        <source>The DarkNet Core developers</source>
-        <translation>DarkNet Core-utvecklarna</translation>
+        <source>The PIVX Core developers</source>
+        <translation>PIVX Core-utvecklarna</translation>
     </message>
     <message>
         <source>[testnet]</source>
@@ -2656,14 +2656,14 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
     </message>
 </context>
 <context>
-    <name>darknet-core</name>
+    <name>pivx-core</name>
     <message>
         <source>Bind to given address and always listen on it. Use [host]:port notation for IPv6</source>
         <translation>Sammanbind till fastställd adress och avlyssna alltid den. Använd [host]:port-notation för IPv6</translation>
     </message>
     <message>
-        <source>Cannot obtain a lock on data directory %s. DarkNet Core is probably already running.</source>
-        <translation>Kan inte erhålla ett lås på datakatalog %s. DarkNet Core körs förmodligen redan.</translation>
+        <source>Cannot obtain a lock on data directory %s. PIVX Core is probably already running.</source>
+        <translation>Kan inte erhålla ett lås på datakatalog %s. PIVX Core körs förmodligen redan.</translation>
     </message>
     <message>
         <source>Obfuscate uses exact denominated amounts to send funds, you might simply need to anonymize some more coins.</source>
@@ -2718,8 +2718,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
         <translation>Detta är en förhandsutgiven testkompilering - använd på egen risk - använd inte för utvinning eller handlarapplikationer.</translation>
     </message>
     <message>
-        <source>Unable to bind to %s on this computer. DarkNet Core is probably already running.</source>
-        <translation>Det går inte att binda till %s till denna dator. DarkNet Core körs förmodligen redan.</translation>
+        <source>Unable to bind to %s on this computer. PIVX Core is probably already running.</source>
+        <translation>Det går inte att binda till %s till denna dator. PIVX Core körs förmodligen redan.</translation>
     </message>
     <message>
         <source>Unable to locate enough Obfuscate denominated funds for this transaction.</source>
@@ -2942,8 +2942,8 @@ https://www.transifex.com/darknet-crypto/darknet-wallet-translations/</translati
         <translation>Information</translation>
     </message>
     <message>
-        <source>Initialization sanity check failed. DarkNet Core is shutting down.</source>
-        <translation>Initialiseringstillståndkontroll misslyckades. DarkNet Core stängs ned.</translation>
+        <source>Initialization sanity check failed. PIVX Core is shutting down.</source>
+        <translation>Initialiseringstillståndkontroll misslyckades. PIVX Core stängs ned.</translation>
     </message>
     <message>
         <source>Input is not valid.</source>

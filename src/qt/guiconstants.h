@@ -47,9 +47,9 @@ static const int MAX_URI_LENGTH = 255;
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 35
 
-#define QAPP_ORG_NAME "DarkNet"
+#define QAPP_ORG_NAME "PIVX"
 #define QAPP_ORG_DOMAIN "darknet-crypto.com"
-#define QAPP_APP_NAME_DEFAULT "DarkNet-Qt"
-#define QAPP_APP_NAME_TESTNET "DarkNet-Qt-testnet"
+#define QAPP_APP_NAME_DEFAULT "PIVX-Qt"
+#define QAPP_APP_NAME_TESTNET "PIVX-Qt-testnet"
 
 #endif // BITCOIN_QT_GUICONSTANTS_H

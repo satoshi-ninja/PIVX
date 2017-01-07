@@ -231,7 +231,7 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return settings.value("nThreadsScriptVerif");
         case ObfuscationRounds:
             return QVariant(nObfuscationRounds);
-        case AnonymizeDarknetAmount:
+        case AnonymizePIVXAmount:
             return QVariant(nAnonymizeDarknetAmount);
         case Listen:
             return settings.value("fListen");
@@ -345,7 +345,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             settings.setValue("nObfuscationRounds", nObfuscationRounds);
             emit obfuscationRoundsChanged(nObfuscationRounds);
             break;
-        case AnonymizeDarknetAmount:
+        case AnonymizePIVXAmount:
             nAnonymizeDarknetAmount = value.toInt();
             settings.setValue("nAnonymizeDarknetAmount", nAnonymizeDarknetAmount);
             emit anonymizeDarknetAmountChanged(nAnonymizeDarknetAmount);

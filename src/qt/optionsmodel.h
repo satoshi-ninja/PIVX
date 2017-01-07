@@ -44,7 +44,7 @@ public:
         DatabaseCache,          // int
         SpendZeroConfChange,    // bool
         ObfuscationRounds,    // int
-        AnonymizeDarknetAmount, //int
+        AnonymizePIVXAmount, //int
         ShowMasternodesTab,     // bool
         Listen,                 // bool
         OptionIDRowCount,
