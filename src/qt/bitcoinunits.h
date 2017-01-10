@@ -59,9 +59,9 @@ public:
      */
     enum Unit
     {
-        PIVX,
-        mPIVX,
-	uPIVX
+        PIV,
+        mPIV,
+	uPIV
     };
 
     enum SeparatorStyle
