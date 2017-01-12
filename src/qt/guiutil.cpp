@@ -833,8 +833,8 @@ QString loadStyleSheet()
             cssName = QString(":/css/") + theme;
         }
         else {
-            cssName = QString(":/css/drk-1");  
-            settings.setValue("theme", "drk-1");
+            cssName = QString(":/css/default");  
+            settings.setValue("theme", "default");
         }
     }
 
