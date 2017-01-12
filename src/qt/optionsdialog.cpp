@@ -83,8 +83,6 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     
     /* Theme selector static themes */
     ui->theme->addItem(QString("PIVX-Default"), QVariant("default"));
-    ui->theme->addItem(QString("PIVX-dark"), QVariant("drk"));
-    ui->theme->addItem(QString("PIVX-dark-1"), QVariant("drk-1"));
 
     /* Theme selector external themes */
     boost::filesystem::path pathAddr = GetDataDir() / "themes";
