@@ -480,6 +480,7 @@ void BitcoinMiner(CWallet *pwallet, bool fProofOfStake)
 
     if(fProofOfStake && (GetTime() - nMintableLastCheck > 5 * 60)) // 5 minute check time 
     {
+        fprintf(stdout, "XX42: checking for mintable coins");
         nMintableLastCheck = GetTime();
         fMintableCoins = pwallet->MintableCoins();
     }
@@ -491,11 +492,29 @@ void BitcoinMiner(CWallet *pwallet, bool fProofOfStake)
             if(chainActive.Tip()->nHeight < Params().LAST_POW_BLOCK())
             {
                 MilliSleep(5000);
+                fprintf(stdout, "XX42: nHeight < Params().LAST_POW_BLOCK()");
                 continue;
             }
 
-            while (chainActive.Tip()->nTime < 1471482000 || vNodes.empty() || pwallet->IsLocked() ||  !fMintableCoins || nReserveBalance >= pwallet->GetBalance() || !masternodeSync.IsSynced())
+// XX42           while (chainActive.Tip()->nTime < 1471482000 || vNodes.empty() || pwallet->IsLocked() ||  !fMintableCoins || nReserveBalance >= pwallet->GetBalance() || !masternodeSync.IsSynced())
+            while (chainActive.Tip()->nTime < 1471482000 || vNodes.empty() || pwallet->IsLocked() ||  !fMintableCoins || nReserveBalance >= pwallet->GetBalance())
             {
+                if(chainActive.Tip()->nTime < 1471482000)
+                    fprintf(stdout, "XX42: chainActive.Tip()->nTime < 1471482000");
+                
+                if(vNodes.empty())
+                    fprintf(stdout, "XX42: vNodes.empty()");
+                
+                if(pwallet->IsLocked())
+                    fprintf(stdout, "XX42: pwallet->IsLocked()");
+                
+                if(!fMintableCoins)
+                    fprintf(stdout, "XX42: !fMintableCoins");
+
+                if(nReserveBalance >= pwallet->GetBalance())
+                    fprintf(stdout, "XX42: nReserveBalance >= pwallet->GetBalance()");
+
+                
                 nLastCoinStakeSearchInterval = 0;
                 MilliSleep(5000);
                 if (!fGenerateBitcoins && !fProofOfStake)
@@ -504,14 +523,17 @@ void BitcoinMiner(CWallet *pwallet, bool fProofOfStake)
 
             if(mapHashedBlocks.count(chainActive.Tip()->nHeight)) //search our map of hashed blocks, see if bestblock has been hashed yet
             {
+                fprintf(stdout, "+");
                 if(GetTime() - mapHashedBlocks[chainActive.Tip()->nHeight] < max(pwallet->nHashInterval, (unsigned int)1)) // wait half of the nHashDrift with max wait of 3 minutes
                 {
+                    fprintf(stdout, ".");
                     MilliSleep(5000);
                     continue;
                 }
             }
         }
 
+        fprintf(stdout, "\nCreate new block\n");
         //
         // Create new block
         //

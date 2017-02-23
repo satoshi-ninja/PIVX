@@ -34,8 +34,11 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 
     if(chainActive.Tip()->nHeight > Params().LAST_POW_BLOCK())
     {
+       
         const CBlockIndex* pindexPrev = chainActive.Tip();
+        fprintf(stdout, "XX42: GetNextWorkRequired Height=%d --------------------------------------\n", chainActive.Tip()->nHeight);
         uint256 bnTargetLimit = (~uint256(0) >> 24);
+        fprintf(stdout, "XX42: GetNextWorkRequired bnTargetLimit=%d\n", bnTargetLimit.GetCompact());
         int64_t nTargetSpacing = 60;
         int64_t nTargetTimespan = 60*40;
 
@@ -43,7 +46,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         if(pindexPrev->nHeight != 0)
             nActualSpacing = pindexPrev->GetBlockTime() - pindexPrev->pprev->GetBlockTime();
 
-
+        fprintf(stdout, "XX42: GetNextWorkRequired nActualSpacing=%ld\n", nActualSpacing);
         if (nActualSpacing < 0)
             nActualSpacing = 1;
 
@@ -51,14 +54,19 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         // ppcoin: retarget with exponential moving toward target spacing
         uint256 bnNew;
         bnNew.SetCompact(pindexPrev->nBits);
+        fprintf(stdout, "XX42: pindexPrev->nBits=%d\n", pindexPrev->nBits);
+        fprintf(stdout, "XX42: GetNextWorkRequired bnNew1=%d\n", bnNew.GetCompact());
 
         int64_t nInterval = nTargetTimespan / nTargetSpacing;
         bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
+        fprintf(stdout, "XX42: GetNextWorkRequired bnNew2=%d\n", bnNew.GetCompact());
         bnNew /= ((nInterval + 1) * nTargetSpacing);
+        fprintf(stdout, "XX42: GetNextWorkRequired bnNew3=%d\n", bnNew.GetCompact());
 
         if (bnNew <= 0 || bnNew > bnTargetLimit)
             bnNew = bnTargetLimit;
 
+        fprintf(stdout, "XX42: GetNextWorkRequired bnNew4=%d, bnTargetLimit=%d\n", bnNew.GetCompact(), bnTargetLimit.GetCompact());
         return bnNew.GetCompact();
     }
 
@@ -108,9 +116,13 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits)
     bool fOverflow;
     uint256 bnTarget;
 
-    if (Params().SkipProofOfWorkCheck() || Params().NetworkID() == CBaseChainParams::TESTNET)
+// XX42    if (Params().SkipProofOfWorkCheck() || Params().NetworkID() == CBaseChainParams::TESTNET)
+//           return true;
+
+    if (Params().SkipProofOfWorkCheck())
        return true;
 
+    
     bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
 
     // Check range
@@ -118,7 +130,10 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits)
         return error("CheckProofOfWork() : nBits below minimum work");
 
     // Check proof of work matches claimed amount
-    if (hash > bnTarget && Params().NetworkID() != CBaseChainParams::TESTNET)
+// XX42    if (hash > bnTarget && Params().NetworkID() != CBaseChainParams::TESTNET)
+//            return error("CheckProofOfWork() : hash doesn't match nBits");
+
+    if (hash > bnTarget)
         return error("CheckProofOfWork() : hash doesn't match nBits");
 
     return true;
