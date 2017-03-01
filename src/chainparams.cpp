@@ -107,7 +107,7 @@ public:
         nRejectBlockOutdatedMajority = 950;
         nToCheckBlockUpgradeMajority = 1000;
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 60; // PIVX: 1 day
+        //nTargetTimespan = 1 * 60; // PIVX: 1 day
         nTargetSpacing = 1 * 60; // PIVX: 1 minute
         nLastPOWBlock = 259200;
         nMaturity = 100;
@@ -198,8 +198,13 @@ public:
         nEnforceBlockUpgradeMajority = 51;
         nRejectBlockOutdatedMajority = 75;
         nToCheckBlockUpgradeMajority = 100;
+        // from MainNet
+        nEnforceBlockUpgradeMajority = 750;
+        nRejectBlockOutdatedMajority = 950;
+        nToCheckBlockUpgradeMajority = 1000;
+        /// end
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 60; // PIVX: 1 day
+        //nTargetTimespan = 1 * 60; // PIVX: 1 day
         nTargetSpacing = 1 * 60; // PIVX: 1 minute
         nLastPOWBlock = 200;
         nMaturity = 15;
@@ -269,7 +274,7 @@ public:
         nRejectBlockOutdatedMajority = 950;
         nToCheckBlockUpgradeMajority = 1000;
         nMinerThreads = 1;
-        nTargetTimespan = 24 * 60 * 60; // Pivx: 1 day
+        //nTargetTimespan = 24 * 60 * 60; // Pivx: 1 day
         nTargetSpacing = 1 * 60; // Pivx: 1 minutes
         bnProofOfWorkLimit = ~uint256(0) >> 1;
         genesis.nTime = 1454124731;

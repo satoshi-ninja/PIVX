@@ -36,9 +36,9 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     {
        
         const CBlockIndex* pindexPrev = chainActive.Tip();
-        fprintf(stdout, "XX42: GetNextWorkRequired Height=%d --------------------------------------\n", chainActive.Tip()->nHeight);
+        LogPrintf("XX42: GetNextWorkRequired Height=%d --------------------------------------\n", chainActive.Tip()->nHeight);
         uint256 bnTargetLimit = (~uint256(0) >> 24);
-        fprintf(stdout, "XX42: GetNextWorkRequired bnTargetLimit=%d\n", bnTargetLimit.GetCompact());
+        LogPrintf( "XX42: GetNextWorkRequired bnTargetLimit=%d\n", bnTargetLimit.GetCompact());
         int64_t nTargetSpacing = 60;
         int64_t nTargetTimespan = 60*40;
 
@@ -46,7 +46,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         if(pindexPrev->nHeight != 0)
             nActualSpacing = pindexPrev->GetBlockTime() - pindexPrev->pprev->GetBlockTime();
 
-        fprintf(stdout, "XX42: GetNextWorkRequired nActualSpacing=%ld\n", nActualSpacing);
+        LogPrintf("XX42: GetNextWorkRequired nActualSpacing=%d\n", nActualSpacing);
         if (nActualSpacing < 0)
             nActualSpacing = 1;
 
@@ -54,19 +54,24 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         // ppcoin: retarget with exponential moving toward target spacing
         uint256 bnNew;
         bnNew.SetCompact(pindexPrev->nBits);
-        fprintf(stdout, "XX42: pindexPrev->nBits=%d\n", pindexPrev->nBits);
-        fprintf(stdout, "XX42: GetNextWorkRequired bnNew1=%d\n", bnNew.GetCompact());
+        LogPrintf("XX42: pindexPrev->nBits=%d\n", pindexPrev->nBits);
+        LogPrintf("XX42: GetNextWorkRequired bnNew1=%d\n", bnNew.GetCompact());
+        LogPrintf("XX42: GetNextWorkRequired bnNew1 String=%d\n", bnNew.ToString());
 
         int64_t nInterval = nTargetTimespan / nTargetSpacing;
         bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
-        fprintf(stdout, "XX42: GetNextWorkRequired bnNew2=%d\n", bnNew.GetCompact());
+        LogPrintf( "XX42: GetNextWorkRequired bnNew2=%d\n", bnNew.GetCompact());
+        LogPrintf("XX42: GetNextWorkRequired bnNew2 String=%d\n", bnNew.ToString());
         bnNew /= ((nInterval + 1) * nTargetSpacing);
-        fprintf(stdout, "XX42: GetNextWorkRequired bnNew3=%d\n", bnNew.GetCompact());
+        LogPrintf( "XX42: GetNextWorkRequired bnNew3=%d\n", bnNew.GetCompact());
+        LogPrintf("XX42: GetNextWorkRequired bnNew3 String=%d\n", bnNew.ToString());
 
-        if (bnNew <= 0 || bnNew > bnTargetLimit)
+        if (bnNew <= 0 || bnNew > bnTargetLimit) {
             bnNew = bnTargetLimit;
 
-        fprintf(stdout, "XX42: GetNextWorkRequired bnNew4=%d, bnTargetLimit=%d\n", bnNew.GetCompact(), bnTargetLimit.GetCompact());
+            LogPrintf( "XX42: GetNextWorkRequired bnNew4=%d, bnTargetLimit=%d\n", bnNew.GetCompact(), bnTargetLimit.GetCompact());
+            LogPrintf("XX42: GetNextWorkRequired bnNew4 String=%d\n", bnNew.ToString());
+        }
         return bnNew.GetCompact();
     }
 

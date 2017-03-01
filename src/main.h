@@ -116,6 +116,7 @@ struct BlockHasher
     size_t operator()(const uint256& hash) const { return hash.GetLow64(); }
 };
 
+extern bool debug_local_stake;
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
 extern CTxMemPool mempool;
