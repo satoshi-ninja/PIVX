@@ -191,7 +191,7 @@ public:
         prevoutStake.SetNull();
         nStakeTime = 0;
         hashProofOfStake = 0;
-                bnChainTrust = 0;
+        bnChainTrust = 0;
 
         nVersion       = 0;
         hashMerkleRoot = 0;
