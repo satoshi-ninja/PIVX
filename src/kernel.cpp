@@ -11,7 +11,6 @@
 #include "script/interpreter.h"
 #include "timedata.h"
 #include "util.h"
-#include "bignum.h"
 
 using namespace std;
 
