@@ -491,9 +491,6 @@ void CBudgetManager::FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, b
             txNew.vout[i].scriptPubKey = payee;
             txNew.vout[i].nValue = nAmount;
   
-            //stakers get the full amount on these blocks
-            txNew.vout[i - 1].nValue = blockValue;
-            
             CTxDestination address1;
             ExtractDestination(payee, address1);
             CBitcoinAddress address2(address1);
