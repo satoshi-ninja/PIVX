@@ -135,7 +135,8 @@ void CBudgetManager::SubmitFinalBudget()
 
     int nBlockStart = nCurrentHeight - nCurrentHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
     if(nSubmittedHeight >= nBlockStart) return;
-    if(nBlockStart - nCurrentHeight > 1440*2) return; //submit final budget 2 days before payment
+    //submit final budget 2 days before payment for Mainnet, about 9 minutes for Testnet
+    if(nBlockStart - nCurrentHeight > ((GetBudgetPaymentCycleBlocks()/30)*2)) return;
 
     std::vector<CBudgetProposal*> vBudgetProposals = budget.GetBudget();
     std::string strBudgetName = "main";
@@ -802,6 +803,11 @@ CAmount CBudgetManager::GetTotalBudget(int nHeight)
 {
     if(chainActive.Tip() == NULL) return 0;
 
+    if(Params().NetworkID() == CBaseChainParams::TESTNET) {
+        CAmount nSubsidy = 500 * COIN; 
+        return ((nSubsidy/100)*10)*146;
+    }
+    
     //get block value and calculate from that
     CAmount nSubsidy = 0;
     if(nHeight <= Params().LAST_POW_BLOCK() && nHeight >= 151200) {
@@ -840,19 +846,13 @@ CAmount CBudgetManager::GetTotalBudget(int nHeight)
     else {
         nSubsidy = 0 * COIN; 
     }
-    if(Params().NetworkID() == CBaseChainParams::TESTNET){
-        nSubsidy = 500 * COIN; 
-    }
 
     // Amount of blocks in a months period of time (using 1 minutes per) = (60*24*30)
-    if(Params().NetworkID() == CBaseChainParams::MAIN && nHeight <= 172800) {
+    if(nHeight <= 172800) {
         return 648000 * COIN;
-    }
-    else if(Params().NetworkID() == CBaseChainParams::MAIN && nHeight > 172800) {
+    } else {
         return ((nSubsidy/100)*10)*1440*30;
     }
-    //for testing purposes
-    return ((nSubsidy/100)*10)*146;
 }
 
 void CBudgetManager::NewBlock()
